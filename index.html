@@ -2,153 +2,112 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EL BODEGÓN - Menú Río Grande</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXO NAVE - El Bodegón Avanzado</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Estilos base para una experiencia tipo App (Sin Scroll) */
-        html, body { 
-            height: 100dvh; width: 100vw; margin: 0; padding: 0; 
-            overflow: hidden; background: #0c0c0c; color: white;
-            font-family: sans-serif; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
-        }
-        
-        .font-oswald { font-family: 'Oswald', sans-serif; }
-        .font-chalk { font-family: 'Permanent Marker', cursive; color: #facc15; }
-        
-        /* Textura de pizarra rústica para el fondo */
-        .bg-pizarra {
-            background-color: #121212;
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/black-chalk.png');
-            background-size: cover; height: 100dvh; display: flex; flex-direction: column;
+        body { 
+            background-color: #0b0f19; 
+            color: #ffffff; 
+            font-family: 'Montserrat', sans-serif; 
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Botón de acción Amarillo Bodegón */
-        .btn-yellow { 
-            background: #facc15; color: #000; font-weight: 900; 
-            font-size: 10px; text-transform: uppercase; padding: 4px 0; 
-            border-radius: 20px; width: 100%; text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        /* Título Principal con Gradiente y Negrita Extrema (Cerca del original) */
+        .nexo-title {
+            font-weight: 900;
+            background: linear-gradient(to right, #38bdf8, #1d4ed8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
         }
-        .btn-yellow:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
-        /* Imágenes de productos circulares y grilla inferior */
-        .img-plate { height: 100px; width: 100px; border-radius: 50%; border: 3px solid #222; object-fit: cover; flex-shrink: 0; }
-        .grid-mini img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; border: 1px solid #333; }
+        /* Efecto Glassmorphism Profundo en las Tarjetas (Clave del parecido) */
+        .nexo-card {
+            background: rgba(23, 29, 41, 0.4);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-        /* Pestaña de navegación activa */
-        .active-tab { color: #facc15; border-bottom: 2px solid #facc15; }
+        .nexo-card:active {
+            transform: scale(0.97);
+            box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.4);
+        }
 
-        [v-cloak] { display: none; }
+        /* Color de Precio Específico */
+        .price-tag {
+            color: #38bdf8;
+            font-weight: 700;
+        }
+
+        /* Icono de Carrito (Placeholder avanzado) */
+        .cart-icon-bg {
+            background: linear-gradient(135deg, rgba(29, 78, 216, 0.2), rgba(56, 189, 248, 0.05));
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 1rem;
+        }
+
+        /* Botón de WhatsApp con Sombra Profunda */
+        .btn-whatsapp {
+            background-color: #23c55e;
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.5);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
-<body class="bg-pizarra">
-    <div id="app" v-cloak class="flex flex-col height-full">
-        
-        <header class="flex justify-between items-center p-4 pt-2 height-[12dvh]">
-            <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center text-xl">📅</div>
-                <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Menú<br>Diario</span>
-            </div>
-            <div class="text-center flex-grow px-2">
-                <h1 class="font- chalk text-3xl italic tracking-tighter uppercase leading-none">EL BODEGÓN</h1>
-                <p class="text-[7px] tracking-[0.4em] text-zinc-400 font-bold uppercase mt-1">Río Grande</p>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center relative">
-                    <span class="text-xl text-yellow-500">🛒</span>
-                    <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-black px-1.5 rounded-full border border-black">{{ pedido.length }}</span>
+<body class="p-6 pb-24 flex flex-col min-h-screen">
+    
+    <header class="text-center mb-10 pt-4">
+        <h1 class="text-4xl md:text-5xl nexo-title">NEXO NAVE</h1>
+        <p class="text-slate-400 text-sm mt-1 uppercase tracking-widest font-bold">Río Grande - Sistema de Pedidos</p>
+    </header>
+
+    <div class="flex-grow space-y-6 max-w-lg mx-auto w-full">
+        <div class="nexo-card p-6 flex justify-between items-center gap-4">
+            <div class="flex-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🦖</span>
+                    <h3 class="text-2xl font-bold tracking-tight text-white">Lomosaurio</h3>
                 </div>
-                <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Carrito<br>{{ pedido.length }} Items</span>
+                <p class="text-slate-400 text-sm mt-1">El más grande de Río Grande, tierno y abundante.</p>
+                <p class="price-tag text-2xl mt-3">$8.500</p>
             </div>
-        </header>
-
-        <nav class="flex justify-between border-b border-zinc-800 px-4 mb-2 pb-1 text-[10px] font-bold uppercase text-zinc-500 tracking-tighter">
-            <button v-for="c in categorias" @click="catActual = c" :class="{'active-tab': catActual === c}" class="px-1 pb-1">{{ c }}</button>
-        </nav>
-
-        <main class="flex-grow flex flex-col justify-around px-4 py-2 overflow-hidden min-height-0">
-            <div v-for="p in platosPrincipales" :key="p.id" class="flex items-center gap-4 h-[40%]">
-                <div class="w-1/3 flex justify-center items-center h-full">
-                    <img :src="p.img" class="img-plate shadow-2xl">
-                </div>
-                <div class="w-2/3">
-                    <h2 class="font-oswald text-2xl italic text-yellow uppercase leading-none">{{ p.nombre }}</h2>
-                    <p class="text-[9px] text-zinc-400 italic leading-tight mt-1 line-clamp-2">{{ p.desc }}</p>
-                    <div class="flex items-center justify-between mt-2">
-                        <span class="text-xl font-bold font-mono">$ {{ p.precio }}</span>
-                        <button @click="agregar(p)" class="btn-yellow max-w-[90px]">Agregar</button>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <section class="grid-mini grid grid-cols-4 gap-2 px-4 py-2 border-t border-zinc-800 height-[18dvh]">
-            <div v-for="p in platosMini" :key="p.id" class="flex flex-col items-center justify-between">
-                <img :src="p.img" class="shadow-lg">
-                <p class="text-[7px] font-black uppercase text-center mt-1 leading-none text-zinc-200 h-3 overflow-hidden">{{ p.nombre }}</p>
-                <button @click="agregar(p)" class="btn-yellow text-[8px] py-1 mt-1">Añadir</button>
-            </div>
-        </section>
-
-        <footer class="p-4 pt-2 height-[25dvh] flex flex-col justify-end">
-            <div class="grid grid-cols-2 gap-2 mb-3">
-                <button v-for="s in sucursales" @click="sucursalSel = s" 
-                        :class="sucursalSel.id === s.id ? 'bg-zinc-100 text-black shadow-lg' : 'bg-zinc-900 text-zinc-500 border border-zinc-800'"
-                        class="p-3 rounded-2xl text-left transition-all">
-                    <p class="text-[10px] font-black uppercase leading-none">{{ s.nombre }}</p>
-                    <p class="text-[8px] font-bold opacity-70">{{ s.dir }}</p>
-                    <p class="text-[9px] font-black mt-1">📞 {{ s.tel_display }}</p>
-                </button>
-            </div>
-            
-            <button @click="enviarWhatsApp" class="w-full bg-zinc-100 text-black py-4 rounded-2xl font-black uppercase flex items-center justify-center gap-3 text-sm active:scale-95 transition-all">
-                <span>ENVIAR PEDIDO A DOMICILIO</span>
-                <span class="text-xl">🛵</span>
+            <button class="cart-icon-bg w-16 h-16 flex items-center justify-center active:scale-95 transition-transform">
+                <span class="text-3xl text-sky-400">🛒</span>
             </button>
-        </footer>
+        </div>
 
+        <div class="nexo-card p-6 flex justify-between items-center gap-4">
+            <div class="flex-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🍳</span>
+                    <h3 class="text-2xl font-bold tracking-tight text-white">Milagruesa</h3>
+                </div>
+                <p class="text-slate-400 text-sm mt-1">Gigante, con papas fritas doradas y dos huevos fritos.</p>
+                <p class="price-tag text-2xl mt-3">$7.200</p>
+            </div>
+            <button class="cart-icon-bg w-16 h-16 flex items-center justify-center active:scale-95 transition-transform">
+                <span class="text-3xl text-sky-400">🛒</span>
+            </button>
+        </div>
     </div>
 
-    <script>
-        const { createApp } = Vue;
-        createApp({
-            data() {
-                return {
-                    base: 'https://manaejtcurxbcsozqcsh.supabase.co/storage/v1/object/public/imagenes/public', // Reemplazar con tu base real
-                    catActual: 'ESPECIALIDADES',
-                    sucursalSel: { id: 1, nombre: 'SARMIENTO', dir: 'Sarmiento 2307', tel: '5492964404950', tel_display: '2964 40-4950' },
-                    categorias: ['INICIO', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
-                    sucursales: [
-                        { id: 1, nombre: 'SARMIENTO', dir: 'Sarmiento 2307', tel: '5492964404950', tel_display: '2964 40-4950' },
-                        { id: 2, nombre: 'CABO 1RO GOMEZ', dir: 'Gomez 2331', tel: '5492964404952', tel_display: '2964 40-4952' }
-                    ],
-                    pedido: [],
-                    platosPrincipales: [
-                        { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa Gigante para compartir con papas fritas.', precio: 7200, img: 'https://images.unsplash.com/photo-1599923262650-d7ce932b7058?q=80&w=400' },
-                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Sándwich de lomo premium completo.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
-                    ],
-                    platosMini: [
-                        { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1614088685112-0a760b71a3c8?q=80&w=200' },
-                        { id: 4, nombre: 'BURGER', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200' },
-                        { id: 5, nombre: 'PAPAS FRITAS', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=200' },
-                        { id: 6, nombre: 'PIZZAS', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=200' }
-                    ]
-                }
-            },
-            methods: {
-                getURL(n) { return `${this.base}/${n}`; }, // Usar esto cuando tengas las fotos reales
-                agregar(p) { this.pedido.push(p); },
-                enviarWhatsApp() {
-                    if (this.pedido.length === 0) return alert("Agregá algo al pedido");
-                    let lista = this.pedido.map(p => `• ${p.nombre}`).join('\n');
-                    let msg = encodeURIComponent(`🍽️ *PEDIDO EL BODEGÓN*\n📍 Sucursal: ${this.sucursalSel.nombre}\n\n${lista}`);
-                    window.open(`https://wa.me/${this.sucursalSel.tel}?text=${msg}`);
-                }
-            }
-        }).mount('#app')
-    </script>
+    <div class="fixed bottom-6 left-6 right-6 max-w-lg mx-auto">
+        <a href="https://wa.me/5492964000000" class="btn-whatsapp w-full py-5 rounded-full flex justify-center items-center text-xl text-white">
+            PEDIR POR WHATSAPP
+        </a>
+    </div>
+
+    <footer class="text-center py-10 text-slate-600 text-xs mt-10">
+        Nexo Nave v2.0 - Río Grande, Tierra del Fuego
+    </footer>
+
 </body>
 </html>
