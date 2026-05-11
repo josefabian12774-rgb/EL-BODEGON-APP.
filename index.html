@@ -8,86 +8,121 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
         body { 
-            background-color: #121212;
-            background-image: url('https://www.transparenttextures.com/patterns/black-chalk.png'); /* Textura de tiza */
-            font-family: 'Oswald', sans-serif;
-            color: white; overflow-x: hidden;
+            background: #121212 url('https://www.transparenttextures.com/patterns/black-chalk.png');
+            color: white; font-family: 'Oswald', sans-serif;
         }
-        .font-chalk { font-family: 'Permanent Marker', cursive; }
-        .btn-bodegon {
-            background: #facc15; color: black; font-weight: 900;
+        .font-marker { font-family: 'Permanent Marker', cursive; }
+        
+        /* Botones con el relieve exacto del diseño */
+        .btn-yellow {
+            background: #facc15; color: #000; font-weight: 900;
             border-radius: 999px; text-transform: uppercase;
-            box-shadow: 0 4px 0 #b48a04; transition: all 0.1s;
+            box-shadow: 0 4px 0 #b48a04; font-size: 10px;
+            padding: 8px 16px;
         }
-        .btn-bodegon:active { transform: translateY(2px); box-shadow: 0 2px 0 #b48a04; }
-        .card-sucursal { background: #f3f4f6; color: black; border-radius: 1.5rem; }
+        .btn-yellow:active { transform: translateY(2px); box-shadow: 0 2px 0 #b48a04; }
+
+        /* Imágenes circulares con borde */
+        .img-circle {
+            width: 110px; height: 110px; border-radius: 50%;
+            border: 4px solid #27272a; object-fit: cover;
+        }
+
+        /* Grilla inferior compacta */
+        .grid-img {
+            width: 100%; aspect-ratio: 1/1; border-radius: 15px;
+            object-fit: cover; border: 1px solid #3f3f46;
+        }
     </style>
 </head>
-<body class="p-4 flex flex-col min-h-screen">
+<body class="p-4 max-w-md mx-auto">
 
     <header class="flex justify-between items-center mb-6">
-        <div class="text-center"><span class="text-2xl">📅</span><p class="text-[8px] font-bold">MENÚ DIARIO</p></div>
         <div class="text-center">
-            <h1 class="font-chalk text-4xl text-yellow-400 leading-none">EL BODEGÓN</h1>
-            <p class="text-[9px] tracking-[0.3em] text-zinc-500 font-bold">RÍO GRANDE</p>
+            <div class="text-2xl">📅</div>
+            <p class="text-[8px] font-bold text-zinc-500">MENÚ DIARIO</p>
         </div>
-        <div class="text-center text-yellow-400">
-            <span class="text-2xl">🛒</span>
-            <p class="text-[8px] font-bold text-white">CARRITO<br>0 ITEMS</p>
+        <div class="text-center">
+            <h1 class="font-marker text-4xl text-yellow-400 italic leading-none">EL BODEGÓN</h1>
+            <p class="text-[9px] tracking-[0.3em] text-zinc-600 font-bold">RÍO GRANDE</p>
+        </div>
+        <div class="text-center">
+            <div class="text-2xl text-yellow-500">🛒</div>
+            <p class="text-[8px] font-bold text-zinc-500">CARRITO</p>
         </div>
     </header>
 
+    <nav class="flex justify-between border-b border-zinc-800 pb-2 mb-6 text-[10px] font-bold text-zinc-500 uppercase">
+        <span>Inicio</span>
+        <span>Promociones</span>
+        <span class="text-yellow-400 border-b-2 border-yellow-400 pb-2">Especialidades</span>
+        <span>Contacto</span>
+    </nav>
+
     <div class="space-y-8 mb-8">
         <div class="flex items-center gap-4">
-            <img src="https://images.unsplash.com/photo-1599923262650-d7ce932b7058?w=300" class="w-32 h-32 rounded-full border-4 border-zinc-800 object-cover">
+            <img src="https://images.unsplash.com/photo-1599923262650-d7ce932b7058?w=300" class="img-circle">
             <div class="flex-1">
-                <h2 class="text-3xl text-yellow-400 italic">MILAGRUESA</h2>
-                <p class="text-xs text-zinc-400">Milanesa Gigante para compartir.</p>
-                <div class="flex justify-between items-end mt-2">
-                    <span class="text-2xl font-bold">$7.200</span>
-                    <button class="btn-bodegon px-4 py-2 text-[10px]">AGREGAR AL PEDIDO</button>
+                <h2 class="text-2xl text-yellow-400 italic leading-none uppercase">Milagruesa</h2>
+                <p class="text-[10px] text-zinc-500 italic">Milanesa Gigante para compartir.</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-2xl font-bold font-mono">$7.200</span>
+                    <button class="btn-yellow">Agregar al pedido</button>
                 </div>
             </div>
         </div>
 
         <div class="flex items-center gap-4">
-            <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300" class="w-32 h-32 rounded-full border-4 border-zinc-800 object-cover">
+            <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300" class="img-circle">
             <div class="flex-1">
-                <h2 class="text-3xl text-yellow-400 italic">LOMOSAURIO</h2>
-                <p class="text-xs text-zinc-400">Sándwich de Lomo Premium completo.</p>
-                <div class="flex justify-between items-end mt-2">
-                    <span class="text-2xl font-bold">$8.500</span>
-                    <button class="btn-bodegon px-4 py-2 text-[10px]">AGREGAR AL PEDIDO</button>
+                <h2 class="text-2xl text-yellow-400 italic leading-none uppercase">Lomosaurio</h2>
+                <p class="text-[10px] text-zinc-500 italic">Sándwich de lomo premium completo.</p>
+                <div class="flex justify-between items-center mt-3">
+                    <span class="text-2xl font-bold font-mono">$8.500</span>
+                    <button class="btn-yellow">Agregar al pedido</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-4 gap-2 mb-8 border-t border-zinc-800 pt-4">
-        <div class="text-center" v-for="i in ['EMPANADAS','BURGER','PAPAS','PIZZAS']">
-            <div class="aspect-square bg-zinc-800 rounded-xl mb-1 overflow-hidden">
-                <img src="https://via.placeholder.com/150" class="w-full h-full object-cover">
-            </div>
-            <p class="text-[7px] font-bold mb-1">{{i}}</p>
-            <button class="btn-bodegon w-full py-1 text-[8px]">AGREGAR</button>
+        <div class="text-center">
+            <img src="https://images.unsplash.com/photo-1614088685112-0a760b71a3c8?w=200" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1">Empanadas</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
+        </div>
+        <div class="text-center">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1">Burger</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
+        </div>
+        <div class="text-center">
+            <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1">Papas</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
+        </div>
+        <div class="text-center">
+            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1">Pizzas</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-3 mb-4">
-        <div class="card-sucursal p-3 text-center">
-            <p class="font-black text-xs">SARMIENTO</p>
-            <p class="text-[9px]">Sarmiento 2307</p>
-            <p class="font-bold text-[10px] mt-1">📞 2964 40-4950</p>
+    <div class="grid grid-cols-2 gap-3 mb-6">
+        <div class="bg-white text-black p-3 rounded-2xl shadow-lg">
+            <p class="font-black text-[10px] uppercase">Sarmiento</p>
+            <p class="text-[8px] font-bold opacity-60">Sarmiento 2307</p>
+            <p class="font-black text-[10px] mt-1 italic">2964 40-4950</p>
         </div>
-        <div class="card-sucursal p-3 text-center">
-            <p class="font-black text-xs">CABO PRIMERO</p>
-            <p class="text-[9px]">Gomez 2331</p>
-            <p class="font-bold text-[10px] mt-1">📞 2964 40-4952</p>
+        <div class="bg-white text-black p-3 rounded-2xl shadow-lg">
+            <p class="font-black text-[10px] uppercase">Cabo Primero</p>
+            <p class="text-[8px] font-bold opacity-60">Gomez 2331</p>
+            <p class="font-black text-[10px] mt-1 italic">2964 40-4952</p>
         </div>
     </div>
 
-    <button class="w-full bg-white text-black font-black py-4 rounded-2xl flex items-center justify-center gap-2 mb-4">
-        ENVÍOS A DOMICILIO 🛵
+    <button class="w-full bg-white text-black font-black py-4 rounded-2xl text-xs shadow-xl uppercase">
+        Envíos a Domicilio 🛵
     </button>
 
 </body>
