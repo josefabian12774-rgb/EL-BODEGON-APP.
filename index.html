@@ -2,177 +2,132 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Bodegón - Río Grande</title>
-    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EL BODEGÓN | Rio Grande</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #1a1a1a;
-            background-image: url('https://www.transparenttextures.com/patterns/black-chalk.png');
-            color: #f1c40f;
-            font-family: 'Special Elite', cursive;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        body { 
+            background: #0a0a0a; 
+            color: #fff; 
+            font-family: 'Roboto Condensed', sans-serif; 
+            height: 100vh; 
+            overflow: hidden; 
         }
-
-        .main-container {
-            border: 10px solid #8e44ad; /* Borde color vino sutil */
-            border-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png') 30 round;
-            padding: 20px;
-            max-width: 600px;
-            width: 100%;
-            background: rgba(0,0,0,0.5);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+        .text-gold { color: #d4af37; }
+        .bg-wood {
+            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/dark-wood.png');
         }
-
-        header {
-            text-align: center;
-            border-bottom: 2px dashed #f1c40f;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+        .card-bodegon {
+            background: linear-gradient(145deg, #1a1a1a, #121212);
+            border: 1px solid #2a2a2a;
+            border-left: 4px solid #d4af37;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
         }
-
-        h1 {
-            font-family: 'Courier Prime', monospace;
-            font-size: 3.5rem;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: -2px;
-            color: #fff;
-            text-shadow: 2px 2px #000;
+        .active-category {
+            background: #d4af37;
+            color: #000;
+            transform: translateY(-2px);
         }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #f1c40f;
-            margin-top: 5px;
-        }
-
-        .menu-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: transform 0.2s;
-        }
-
-        .menu-item:hover {
-            transform: scale(1.02);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .item-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 10px;
-            object-cover;
-            border: 2px solid #f1c40f;
-        }
-
-        .item-details {
-            flex: 1;
-        }
-
-        .item-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #fff;
-            margin: 0;
-        }
-
-        .item-desc {
-            font-size: 0.9rem;
-            color: #bbb;
-            margin: 5px 0;
-        }
-
-        .item-price {
-            font-size: 1.3rem;
-            color: #f1c40f;
-            font-weight: bold;
-        }
-
-        .btn-whatsapp {
-            background-color: #25d366;
-            color: white;
-            text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 30px;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            font-family: sans-serif;
-        }
-
-        .btn-whatsapp:hover {
-            background-color: #1ebe57;
-        }
-
-        footer {
-            margin-top: 50px;
-            font-size: 0.8rem;
-            color: #555;
-            text-align: center;
-        }
+        [v-cloak] { display: none; }
     </style>
 </head>
-<body>
-
-    <div class="main-container">
-        <header>
-            <h1>EL BODEGÓN</h1>
-            <div class="subtitle">Lo de Fabian - Río Grande</div>
+<body class="bg-wood">
+    <div id="app" v-cloak class="h-screen flex flex-col p-5 max-w-lg mx-auto">
+        
+        <header class="text-center mb-6">
+            <h1 class="text-4xl font-black italic tracking-tighter text-gold" style="font-family: 'Playfair Display', serif;">EL BODEGÓN</h1>
+            <div class="flex justify-center items-center gap-2 mt-1">
+                <span class="h-1 w-8 bg-gold/50"></span>
+                <p class="text-[10px] uppercase tracking-[0.3em] text-gray-400 font-bold">Río Grande · Tierra del Fuego</p>
+                <span class="h-1 w-8 bg-gold/50"></span>
+            </div>
         </header>
 
-        <div class="menu-item">
-            <img src="https://images.unsplash.com/photo-1594179047519-f347310d3322?q=80&w=300&auto=format&fit=crop" alt="Lomo Completo" class="item-img">
-            <div class="item-details">
-                <p class="item-name">LOMO COMPLETO</p>
-                <p class="item-desc">Huevo, jamón, queso, lechuga, tomate y la salsa de la casa.</p>
-                <span class="item-price">$ 8.500</span>
-            </div>
+        <div class="grid grid-cols-2 gap-2 mb-6">
+            <button v-for="s in sucursales" @click="sucursalSel = s"
+                    :class="['py-2 text-[10px] font-black rounded-md border transition-all', sucursalSel.id === s.id ? 'bg-gold border-gold text-black' : 'border-zinc-700 text-zinc-500 uppercase']">
+                {{ s.nombre }}
+            </button>
         </div>
 
-        <div class="menu-item">
-            <img src="https://images.unsplash.com/photo-1606854421111-927b5f1a9b2b?q=80&w=300&auto=format&fit=crop" alt="Milanesa con Papas" class="item-img">
-            <div class="item-details">
-                <p class="item-name">MILANESA XL</p>
-                <p class="item-desc">A la napolitana con papas fritas a caballo.</p>
-                <span class="item-price">$ 7.200</span>
-            </div>
-        </div>
+        <nav class="flex gap-2 overflow-x-auto no-scrollbar mb-6 pb-2">
+            <button v-for="c in categorias" @click="catActual = c"
+                    :class="['px-4 py-2 rounded-full text-[11px] font-black uppercase border border-zinc-800 transition-all whitespace-nowrap', catActual === c ? 'active-category' : 'bg-zinc-900/50 text-zinc-400']">
+                {{ c }}
+            </button>
+        </nav>
 
-        <div class="menu-item">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format&fit=crop" alt="Hamburguesa Casera" class="item-img">
-            <div class="item-details">
-                <p class="item-name">BURGER CASERA</p>
-                <p class="item-desc">Doble carne, cheddar, bacon y cebolla caramelizada.</p>
-                <span class="item-price">$ 6.500</span>
-            </div>
-        </div>
+        <main class="flex-grow space-y-4 overflow-y-auto no-scrollbar pr-1">
+            <button v-for="p in platosFiltrados" @click="agregar(p)"
+                    class="card-bodegon w-full p-4 rounded-xl flex justify-between items-center group active:scale-[0.98] transition-transform">
+                <div class="text-left flex-1">
+                    <h3 class="text-lg font-black uppercase leading-none mb-1 group-active:text-black">{{ p.nombre }}</h3>
+                    <p class="text-[10px] text-zinc-500 italic mb-2 line-clamp-1">{{ p.desc }}</p>
+                    <span class="bg-zinc-800 text-gold px-3 py-1 rounded-full text-xs font-bold border border-gold/20">$ {{ p.precio }}</span>
+                </div>
+                <div class="ml-4 h-14 w-14 bg-zinc-800 rounded-lg flex items-center justify-center border border-zinc-700">
+                    <span class="text-2xl">🍽️</span>
+                </div>
+            </button>
+        </main>
 
-        <div style="text-align: center;">
-            <a href="https://wa.me/5492964000000?text=Hola!%20Vengo%20desde%20la%20App" class="btn-whatsapp">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 25px; height: 25px;">
+        <footer class="mt-6">
+            <button @click="enviarPedido" 
+                    :disabled="pedido.length === 0"
+                    class="w-full py-5 rounded-2xl font-black uppercase text-lg transition-all shadow-2xl flex flex-col items-center justify-center leading-none"
+                    :class="pedido.length > 0 ? 'bg-green-700 text-white border-b-4 border-green-900' : 'bg-zinc-800 text-zinc-600'">
+                <span class="text-[10px] opacity-70 mb-1">Confirmar Pedido ({{ pedido.length }} Items)</span>
                 PEDIR POR WHATSAPP
-            </a>
-        </div>
+            </button>
+            <p v-if="pedido.length > 0" @click="pedido = []" class="text-center text-[10px] text-zinc-600 mt-3 underline uppercase font-bold cursor-pointer">Limpiar comanda</p>
+        </footer>
+
     </div>
 
-    <footer>
-        Hecho con tiza y carbón para El Bodegón - 2026
-    </footer>
-
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    catActual: 'MINUTAS',
+                    sucursalSel: { id: 1, nombre: 'SARMIENTO', tel: '5492964404950' },
+                    sucursales: [
+                        { id: 1, nombre: 'SUCURSAL SARMIENTO', tel: '5492964404950' },
+                        { id: 2, nombre: 'SUCURSAL CABO 1RO', tel: '5492964404952' }
+                    ],
+                    categorias: ['MINUTAS', 'LOMOS', 'BURGUERS', 'BEBIDAS'],
+                    pedido: [],
+                    platos: [
+                        { id: 1, cat: 'MINUTAS', nombre: 'MILANESA COMPLETA', precio: 7500, desc: 'Con papas fritas y dos huevos fritos.' },
+                        { id: 2, cat: 'MINUTAS', nombre: 'SUPREMA A LA SUIZA', precio: 8200, desc: 'Bañada en salsa blanca y queso gratinado.' },
+                        { id: 3, cat: 'LOMOS', nombre: 'LOMO ESPECIAL', precio: 8900, desc: 'Lomo tierno, jamón, queso y huevo.' },
+                        { id: 4, cat: 'BURGUERS', nombre: 'BODEGÓN DOBLE', precio: 6800, desc: 'Doble medallón de carne y extra cheddar.' },
+                        { id: 5, cat: 'BEBIDAS', nombre: 'STELLA ARTOIS 1L', precio: 3500, desc: 'Cerveza bien helada.' }
+                    ]
+                }
+            },
+            computed: {
+                platosFiltrados() {
+                    return this.platos.filter(p => p.cat === this.catActual);
+                },
+                total() {
+                    return this.pedido.reduce((acc, p) => acc + p.precio, 0);
+                }
+            },
+            methods: {
+                agregar(p) {
+                    this.pedido.push(p);
+                    if ('vibrate' in navigator) navigator.vibrate(50);
+                },
+                enviarPedido() {
+                    let lista = this.pedido.map(p => `• *${p.nombre}*`).join('\n');
+                    let msg = encodeURIComponent(`🍽️ *NUEVO PEDIDO BODEGÓN*\n📍 *Lugar:* ${this.sucursalSel.nombre}\n\n${lista}\n\n💰 *TOTAL: $${this.total}*`);
+                    window.open(`https://wa.me/${this.sucursalSel.tel}?text=${msg}`);
+                }
+            }
+        }).mount('#app')
+    </script>
 </body>
 </html>
