@@ -3,108 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EL BODEGÓN | OFICIAL</title>
+    <title>EL BODEGÓN - Menú Río Grande</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* Estilos base para una experiencia tipo App (Sin Scroll) */
         html, body { 
-            height: 100dvh; width: 100vw; overflow: hidden; 
-            background: #000; font-family: 'Roboto Condensed', sans-serif;
+            height: 100dvh; width: 100vw; margin: 0; padding: 0; 
+            overflow: hidden; background: #0c0c0c; color: white;
+            font-family: sans-serif; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
         }
-        .text-yellow { color: #facc15; }
-        .font-oswald { font-family: 'Oswald', sans-serif; }
         
-        .app-container {
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
+        .font-oswald { font-family: 'Oswald', sans-serif; }
+        .font-chalk { font-family: 'Permanent Marker', cursive; color: #facc15; }
+        
+        /* Textura de pizarra rústica para el fondo */
+        .bg-pizarra {
+            background-color: #121212;
             background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/black-chalk.png');
-            padding: 10px 15px;
+            background-size: cover; height: 100dvh; display: flex; flex-direction: column;
         }
 
-        /* HEADER */
-        .header-btn {
-            background: #1a1a1a; border: 1px solid #333;
-            width: 50px; height: 50px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        /* PLATOS PRINCIPALES (Flex indexado para que entren 2) */
-        .main-dish { display: flex; align-items: center; gap: 12px; flex: 1; min-height: 0; }
-        .img-plate {
-            height: 85%; aspect-ratio: 1/1; border-radius: 50%;
-            border: 3px solid #222; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-
-        /* GRILLA 4 PRODUCTOS (Calcado Imagen Norte) */
-        .grid-mini {
-            display: grid; grid-template-cols: repeat(4, 1fr); gap: 8px;
-            padding: 10px 0; border-top: 1px solid #333;
-        }
-        .grid-mini img {
-            width: 100%; aspect-ratio: 1/1; border-radius: 8px;
-            object-fit: cover; border: 1px solid #444;
-        }
-
-        /* BOTONES */
-        .btn-yellow {
-            background: #facc15; color: #000; font-weight: 900;
-            font-size: 9px; text-transform: uppercase; padding: 4px 0;
+        /* Botón de acción Amarillo Bodegón */
+        .btn-yellow { 
+            background: #facc15; color: #000; font-weight: 900; 
+            font-size: 10px; text-transform: uppercase; padding: 4px 0; 
             border-radius: 20px; width: 100%; text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+        .btn-yellow:active { transform: translateY(1px); box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+        /* Imágenes de productos circulares y grilla inferior */
+        .img-plate { height: 100px; width: 100px; border-radius: 50%; border: 3px solid #222; object-fit: cover; flex-shrink: 0; }
+        .grid-mini img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; border: 1px solid #333; }
+
+        /* Pestaña de navegación activa */
+        .active-tab { color: #facc15; border-bottom: 2px solid #facc15; }
 
         [v-cloak] { display: none; }
     </style>
 </head>
-<body>
-    <div id="app" v-cloak class="app-container">
+<body class="bg-pizarra">
+    <div id="app" v-cloak class="flex flex-col height-full">
         
-        <header class="flex justify-between items-start mb-2">
+        <header class="flex justify-between items-center p-4 pt-2 height-[12dvh]">
             <div class="flex flex-col items-center">
-                <div class="header-btn text-xl">📅</div>
+                <div class="bg-zinc-900 border border-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center text-xl">📅</div>
                 <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Menú<br>Diario</span>
             </div>
-            <div class="text-center pt-1">
-                <h1 class="font-oswald text-3xl italic text-yellow leading-none uppercase tracking-tighter">EL BODEGÓN</h1>
-                <p class="text-[8px] tracking-[0.3em] text-zinc-500 font-bold uppercase">Río Grande</p>
+            <div class="text-center flex-grow px-2">
+                <h1 class="font- chalk text-3xl italic tracking-tighter uppercase leading-none">EL BODEGÓN</h1>
+                <p class="text-[7px] tracking-[0.4em] text-zinc-400 font-bold uppercase mt-1">Río Grande</p>
             </div>
             <div class="flex flex-col items-center">
-                <div class="header-btn relative">
+                <div class="bg-zinc-900 border border-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center relative">
                     <span class="text-xl text-yellow-500">🛒</span>
-                    <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-black px-1.5 rounded-full">{{ pedido.length }}</span>
+                    <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-black px-1.5 rounded-full border border-black">{{ pedido.length }}</span>
                 </div>
-                <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Carrito<br>{{ pedido.length }} items</span>
+                <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Carrito<br>{{ pedido.length }} Items</span>
             </div>
         </header>
 
-        <nav class="flex justify-between border-b border-zinc-800 mb-2 pb-1 text-[10px] font-bold uppercase text-zinc-500">
-            <button v-for="c in categorias" @click="catActual = c" :class="{'text-yellow border-b-2 border-yellow': catActual === c}" class="px-1">{{ c }}</button>
+        <nav class="flex justify-between border-b border-zinc-800 px-4 mb-2 pb-1 text-[10px] font-bold uppercase text-zinc-500 tracking-tighter">
+            <button v-for="c in categorias" @click="catActual = c" :class="{'active-tab': catActual === c}" class="px-1 pb-1">{{ c }}</button>
         </nav>
 
-        <div class="flex flex-col flex-[2] justify-around min-height-0 py-1">
-            <div v-for="p in platosPrincipales" :key="p.id" class="main-dish">
-                <img :src="p.img" class="img-plate">
-                <div class="flex-1">
+        <main class="flex-grow flex flex-col justify-around px-4 py-2 overflow-hidden min-height-0">
+            <div v-for="p in platosPrincipales" :key="p.id" class="flex items-center gap-4 h-[40%]">
+                <div class="w-1/3 flex justify-center items-center h-full">
+                    <img :src="p.img" class="img-plate shadow-2xl">
+                </div>
+                <div class="w-2/3">
                     <h2 class="font-oswald text-2xl italic text-yellow uppercase leading-none">{{ p.nombre }}</h2>
                     <p class="text-[9px] text-zinc-400 italic leading-tight mt-1 line-clamp-2">{{ p.desc }}</p>
                     <div class="flex items-center justify-between mt-2">
                         <span class="text-xl font-bold font-mono">$ {{ p.precio }}</span>
-                        <button @click="agregar(p)" class="btn-yellow max-w-[80px]">Agregar</button>
+                        <button @click="agregar(p)" class="btn-yellow max-w-[90px]">Agregar</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
 
-        <div class="grid-mini">
+        <section class="grid-mini grid grid-cols-4 gap-2 px-4 py-2 border-t border-zinc-800 height-[18dvh]">
             <div v-for="p in platosMini" :key="p.id" class="flex flex-col items-center justify-between">
-                <img :src="p.img">
-                <p class="text-[7px] font-black uppercase text-center mt-1 leading-none h-3 overflow-hidden text-zinc-300">{{ p.nombre }}</p>
-                <button @click="agregar(p)" class="btn-yellow text-[7px] mt-1 py-1">Agregar</button>
+                <img :src="p.img" class="shadow-lg">
+                <p class="text-[7px] font-black uppercase text-center mt-1 leading-none text-zinc-200 h-3 overflow-hidden">{{ p.nombre }}</p>
+                <button @click="agregar(p)" class="btn-yellow text-[8px] py-1 mt-1">Añadir</button>
             </div>
-        </div>
+        </section>
 
-        <footer class="mt-2">
-            <div class="grid grid-cols-2 gap-2 mb-2">
-                <button v-for="s in sucursales" @click="sucursalSel = s" :class="sucursalSel.id === s.id ? 'bg-white text-black' : 'bg-zinc-
+        <footer class="p-4 pt-2 height-[25dvh] flex flex-col justify-end">
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                <button v-for="s in sucursales" @click="sucursalSel = s" 
+                        :class="sucursalSel.id === s.id ? 'bg-zinc-100 text-black shadow-lg' : 'bg-zinc-900 text-zinc-500 border border-zinc-800'"
+                        class="p-3 rounded-2xl text-left transition-all">
+                    <p class="text-[10px] font-black uppercase leading-none">{{ s.nombre }}</p>
+                    <p class="text-[8px] font-bold opacity-70">{{ s.dir }}</p>
+                    <p class="text-[9px] font-black mt-1">📞 {{ s.tel_display }}</p>
+                </button>
+            </div>
+            
+            <button @click="enviarWhatsApp" class="w-full bg-zinc-100 text-black py-4 rounded-2xl font-black uppercase flex items-center justify-center gap-3 text-sm active:scale-95 transition-all">
+                <span>ENVIAR PEDIDO A DOMICILIO</span>
+                <span class="text-xl">🛵</span>
+            </button>
+        </footer>
+
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    base: 'https://manaejtcurxbcsozqcsh.supabase.co/storage/v1/object/public/imagenes/public', // Reemplazar con tu base real
+                    catActual: 'ESPECIALIDADES',
+                    sucursalSel: { id: 1, nombre: 'SARMIENTO', dir: 'Sarmiento 2307', tel: '5492964404950', tel_display: '2964 40-4950' },
+                    categorias: ['INICIO', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
+                    sucursales: [
+                        { id: 1, nombre: 'SARMIENTO', dir: 'Sarmiento 2307', tel: '5492964404950', tel_display: '2964 40-4950' },
+                        { id: 2, nombre: 'CABO 1RO GOMEZ', dir: 'Gomez 2331', tel: '5492964404952', tel_display: '2964 40-4952' }
+                    ],
+                    pedido: [],
+                    platosPrincipales: [
+                        { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa Gigante para compartir con papas fritas.', precio: 7200, img: 'https://images.unsplash.com/photo-1599923262650-d7ce932b7058?q=80&w=400' },
+                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Sándwich de lomo premium completo.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
+                    ],
+                    platosMini: [
+                        { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1614088685112-0a760b71a3c8?q=80&w=200' },
+                        { id: 4, nombre: 'BURGER', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200' },
+                        { id: 5, nombre: 'PAPAS FRITAS', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=200' },
+                        { id: 6, nombre: 'PIZZAS', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=200' }
+                    ]
+                }
+            },
+            methods: {
+                getURL(n) { return `${this.base}/${n}`; }, // Usar esto cuando tengas las fotos reales
+                agregar(p) { this.pedido.push(p); },
+                enviarWhatsApp() {
+                    if (this.pedido.length === 0) return alert("Agregá algo al pedido");
+                    let lista = this.pedido.map(p => `• ${p.nombre}`).join('\n');
+                    let msg = encodeURIComponent(`🍽️ *PEDIDO EL BODEGÓN*\n📍 Sucursal: ${this.sucursalSel.nombre}\n\n${lista}`);
+                    window.open(`https://wa.me/${this.sucursalSel.tel}?text=${msg}`);
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
