@@ -23,12 +23,15 @@
 
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
-        @keyframes pulse-yellow {
-            0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(250, 204, 21, 0)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.6)); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(250, 204, 21, 0)); }
+        /* Animación Palpitar para Menú Diario */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
         }
-        .pulse-menu { animation: pulse-yellow 2s infinite ease-in-out; }
+        .pulse-menu { animation: heartbeat 2s infinite ease-in-out; }
 
         .btn-action { 
             background: #facc15; color: #000; font-weight: 900; 
@@ -48,8 +51,8 @@
     <div id="app" v-cloak class="flex flex-col h-full p-4 pt-2">
         
         <header class="flex justify-between items-center h-[12%]">
-            <div class="flex flex-col items-center pulse-menu">
-                <div class="bg-zinc-900 border border-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-lg">📅</div>
+            <div class="flex flex-col items-center">
+                <div class="bg-zinc-900 border border-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-lg pulse-menu">📅</div>
                 <span class="text-[9px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Menú<br>Diario</span>
             </div>
             <div class="text-center">
@@ -93,10 +96,15 @@
 
         <footer class="flex flex-col justify-end gap-3 pb-2 h-[25%]">
             <div class="grid grid-cols-2 gap-2">
-                <div v-for="s in sucursales" class="bg-white rounded-2xl p-2 text-black shadow-lg text-center">
-                    <p class="text-[10px] font-black uppercase leading-none">{{ s.nombre }}</p>
-                    <p class="text-[8px] font-bold opacity-70 mb-1">{{ s.dir }}</p>
-                    <p class="text-[10px] font-black">📞 {{ s.tel }}</p>
+                <div class="bg-white rounded-2xl p-2 text-black shadow-lg text-center">
+                    <p class="text-[10px] font-black uppercase leading-none">SARMIENTO</p>
+                    <p class="text-[8px] font-bold opacity-70 mb-1">Sarmiento 2307</p>
+                    <p class="text-[10px] font-black">📞 40-4950</p>
+                </div>
+                <div class="bg-white rounded-2xl p-2 text-black shadow-lg text-center">
+                    <p class="text-[10px] font-black uppercase leading-none">CABO PRIMERO</p>
+                    <p class="text-[8px] font-bold opacity-70 mb-1">Gomez 2331</p>
+                    <p class="text-[10px] font-black">📞 40-4952</p>
                 </div>
             </div>
             <button @click="enviar" class="w-full bg-white text-black py-4 rounded-2xl font-black uppercase flex items-center justify-center gap-2 text-sm shadow-xl active:scale-95 transition-all">
@@ -114,10 +122,6 @@
                     tabActiva: 'ESPECIALIDADES',
                     tabs: ['INICIO', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
                     pedido: [],
-                    sucursales: [
-                        { nombre: 'SARMIENTO', dir: 'Sarmiento 2307', tel: '40-4950' },
-                        { nombre: 'CABO PRIMERO', dir: 'Gomez 2331', tel: '40-4952' }
-                    ],
                     destacados: [
                         { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa gigante con papas fritas y huevos fritos.', precio: 7200, img: 'https://images.unsplash.com/photo-1599923262650-d7ce932b7058?q=80&w=400' },
                         { id: 2, nombre: 'LOMOSAURIO', desc: 'Lomo tierno, jamón, queso y huevo frito.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
@@ -133,8 +137,8 @@
             methods: {
                 agregar(p) { this.pedido.push(p); },
                 enviar() {
-                    if(this.pedido.length === 0) return alert("¡Tu carrito está vacío!");
-                    alert("¡Pedido enviado! Total items: " + this.pedido.length);
+                    if(this.pedido.length === 0) return alert("¡Elegí algo rico primero!");
+                    alert("¡Pedido en camino! Items: " + this.pedido.length);
                 }
             }
         }).mount('#app')
