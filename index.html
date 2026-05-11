@@ -10,45 +10,55 @@
         body { 
             background: #121212 url('https://www.transparenttextures.com/patterns/black-chalk.png');
             color: white; font-family: 'Oswald', sans-serif;
+            overflow-x: hidden;
         }
         .font-marker { font-family: 'Permanent Marker', cursive; }
         
-        /* Botones con el relieve exacto del diseño */
+        /* ANIMACIÓN PALPITAR */
+        @keyframes pulse-red {
+            0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(239, 68, 68, 0)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(239, 68, 68, 0)); }
+        }
+        .pulse-menu { animation: pulse-red 2s infinite ease-in-out; }
+
         .btn-yellow {
             background: #facc15; color: #000; font-weight: 900;
             border-radius: 999px; text-transform: uppercase;
             box-shadow: 0 4px 0 #b48a04; font-size: 10px;
-            padding: 8px 16px;
+            padding: 8px 12px;
         }
         .btn-yellow:active { transform: translateY(2px); box-shadow: 0 2px 0 #b48a04; }
 
-        /* Imágenes circulares con borde */
         .img-circle {
-            width: 110px; height: 110px; border-radius: 50%;
+            width: 115px; height: 115px; border-radius: 50%;
             border: 4px solid #27272a; object-fit: cover;
+            background: #27272a;
         }
 
-        /* Grilla inferior compacta */
         .grid-img {
-            width: 100%; aspect-ratio: 1/1; border-radius: 15px;
+            width: 100%; aspect-ratio: 1/1; border-radius: 12px;
             object-fit: cover; border: 1px solid #3f3f46;
+            background: #27272a;
         }
     </style>
 </head>
 <body class="p-4 max-w-md mx-auto">
 
-    <header class="flex justify-between items-center mb-6">
-        <div class="text-center">
-            <div class="text-2xl">📅</div>
-            <p class="text-[8px] font-bold text-zinc-500">MENÚ DIARIO</p>
+    <header class="flex justify-between items-start mb-4">
+        <div class="text-center pulse-menu"> <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" class="w-10 h-10 mx-auto brightness-110">
+            <p class="text-[8px] font-bold text-zinc-400 mt-1 uppercase">Menú<br>Diario</p>
         </div>
         <div class="text-center">
             <h1 class="font-marker text-4xl text-yellow-400 italic leading-none">EL BODEGÓN</h1>
             <p class="text-[9px] tracking-[0.3em] text-zinc-600 font-bold">RÍO GRANDE</p>
         </div>
         <div class="text-center">
-            <div class="text-2xl text-yellow-500">🛒</div>
-            <p class="text-[8px] font-bold text-zinc-500">CARRITO</p>
+            <div class="relative inline-block">
+                <span class="text-2xl text-yellow-500">🛒</span>
+                <span class="absolute -top-1 -right-2 bg-white text-black text-[9px] px-1 rounded-full font-black">6</span>
+            </div>
+            <p class="text-[8px] font-bold text-zinc-400 uppercase">Carrito<br>6 items</p>
         </div>
     </header>
 
@@ -59,71 +69,77 @@
         <span>Contacto</span>
     </nav>
 
-    <div class="space-y-8 mb-8">
-        <div class="flex items-center gap-4">
-            <img src="https://images.unsplash.com/photo-1599923262650-d7ce932b7058?w=300" class="img-circle">
+    <div class="space-y-6 mb-8">
+        <div class="flex items-center gap-3">
+            <img src="https://img.freepik.com/foto-gratis/milanesa-pollo-empanada-frita-papas-fritas-ensalada-aislada-fondo-blanco_123827-23343.jpg" class="img-circle">
             <div class="flex-1">
-                <h2 class="text-2xl text-yellow-400 italic leading-none uppercase">Milagruesa</h2>
-                <p class="text-[10px] text-zinc-500 italic">Milanesa Gigante para compartir.</p>
-                <div class="flex justify-between items-center mt-3">
-                    <span class="text-2xl font-bold font-mono">$7.200</span>
-                    <button class="btn-yellow">Agregar al pedido</button>
+                <div class="flex justify-between items-start">
+                    <h2 class="text-2xl text-yellow-400 italic leading-none uppercase">Milagruesa</h2>
+                    <span class="text-xl font-bold text-white">$250</span>
                 </div>
+                <p class="text-[10px] text-zinc-500 italic mb-3">Milanesa Gigante para compartir.</p>
+                <button class="btn-yellow w-full">Agregar al pedido</button>
             </div>
         </div>
 
-        <div class="flex items-center gap-4">
-            <img src="https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300" class="img-circle">
+        <div class="flex items-center gap-3">
+            <img src="https://img.freepik.com/foto-gratis/sandwich-carne-papas-fritas_1203-9114.jpg" class="img-circle">
             <div class="flex-1">
-                <h2 class="text-2xl text-yellow-400 italic leading-none uppercase">Lomosaurio</h2>
-                <p class="text-[10px] text-zinc-500 italic">Sándwich de lomo premium completo.</p>
-                <div class="flex justify-between items-center mt-3">
-                    <span class="text-2xl font-bold font-mono">$8.500</span>
-                    <button class="btn-yellow">Agregar al pedido</button>
+                <div class="flex justify-between items-start">
+                    <h2 class="text-2xl text-yellow-400 italic leading-none uppercase">Lomosaurio</h2>
+                    <span class="text-xl font-bold text-white">$220</span>
                 </div>
+                <p class="text-[10px] text-zinc-500 italic mb-3">Sándwich de Lomo Premium completo.</p>
+                <button class="btn-yellow w-full">Agregar al pedido</button>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-4 gap-2 mb-8 border-t border-zinc-800 pt-4">
         <div class="text-center">
-            <img src="https://images.unsplash.com/photo-1614088685112-0a760b71a3c8?w=200" class="grid-img mb-1">
-            <p class="text-[7px] font-bold uppercase mb-1">Empanadas</p>
-            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
+            <img src="https://img.freepik.com/foto-gratis/empanadas-argentinas-sobre-fondo-oscuro_123827-22927.jpg" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1 leading-none h-4">Empanadas<br>Bodegón</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[8px]">Agregar</button>
         </div>
         <div class="text-center">
-            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200" class="grid-img mb-1">
-            <p class="text-[7px] font-bold uppercase mb-1">Burger</p>
-            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
+            <img src="https://img.freepik.com/foto-gratis/hamburguesa-carne-queso-aislada-fondo-blanco_123827-23306.jpg" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1 leading-none h-4">Hamburguesa</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[8px]">Agregar</button>
         </div>
         <div class="text-center">
-            <img src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200" class="grid-img mb-1">
-            <p class="text-[7px] font-bold uppercase mb-1">Papas</p>
-            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
+            <img src="https://img.freepik.com/foto-gratis/papas-fritas-crujientes-doradas_1203-8208.jpg" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1 leading-none h-4">Papas<br>Bodegón</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[8px]">Agregar</button>
         </div>
         <div class="text-center">
-            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200" class="grid-img mb-1">
-            <p class="text-[7px] font-bold uppercase mb-1">Pizzas</p>
-            <button class="btn-yellow w-full !py-1 !px-0 !text-[7px]">Agregar</button>
+            <img src="https://img.freepik.com/foto-gratis/pizza-pepperoni-queso-fundido_123827-23319.jpg" class="grid-img mb-1">
+            <p class="text-[7px] font-bold uppercase mb-1 leading-none h-4">Pizzas<br>Bodegón</p>
+            <button class="btn-yellow w-full !py-1 !px-0 !text-[8px]">Agregar</button>
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-3 mb-6">
-        <div class="bg-white text-black p-3 rounded-2xl shadow-lg">
-            <p class="font-black text-[10px] uppercase">Sarmiento</p>
-            <p class="text-[8px] font-bold opacity-60">Sarmiento 2307</p>
-            <p class="font-black text-[10px] mt-1 italic">2964 40-4950</p>
+    <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="bg-zinc-100 text-black p-3 rounded-[20px] shadow-lg text-center">
+            <p class="font-black text-xs uppercase">Sarmiento</p>
+            <p class="text-[9px] font-bold opacity-60">Sarmiento 2307</p>
+            <p class="font-black text-[10px] mt-1 italic">📞 2964 40-4950</p>
         </div>
-        <div class="bg-white text-black p-3 rounded-2xl shadow-lg">
-            <p class="font-black text-[10px] uppercase">Cabo Primero</p>
-            <p class="text-[8px] font-bold opacity-60">Gomez 2331</p>
-            <p class="font-black text-[10px] mt-1 italic">2964 40-4952</p>
+        <div class="bg-zinc-100 text-black p-3 rounded-[20px] shadow-lg text-center">
+            <p class="font-black text-xs uppercase">Cabo Primero</p>
+            <p class="text-[9px] font-bold opacity-60">Gomez 2331</p>
+            <p class="font-black text-[10px] mt-1 italic">📞 2964 40-4952</p>
         </div>
     </div>
 
-    <button class="w-full bg-white text-black font-black py-4 rounded-2xl text-xs shadow-xl uppercase">
-        Envíos a Domicilio 🛵
+    <button class="w-full bg-zinc-100 text-black font-black py-3.5 rounded-2xl text-sm shadow-xl uppercase flex items-center justify-center gap-3">
+        Envíos a Domicilio <img src="https://cdn-icons-png.flaticon.com/512/2830/2830312.png" class="w-6 h-6">
     </button>
+
+    <div class="flex justify-center gap-4 mt-4 opacity-70">
+        <span class="text-xl">Facebook</span>
+        <span class="text-xl">Instagram</span>
+        <span class="text-xs font-bold self-center">@RG.ELBODEGON</span>
+    </div>
 
 </body>
 </html>
