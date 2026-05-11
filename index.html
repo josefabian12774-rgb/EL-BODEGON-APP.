@@ -2,143 +2,177 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EL BODEGÓN | Menú Táctil</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Bodegón - Río Grande</title>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Roboto Condensed', sans-serif; 
-            height: 100vh; 
-            overflow: hidden; /* Elimina el scroll total */
-        }
-        .text-bodegon { font-family: 'Oswald', sans-serif; color: #facc15; }
-        
-        /* Fondo rústico sutil */
-        .bg-pizarra {
-            background-color: #121212;
-            background-image: radial-gradient(#222 10%, transparent 10%);
-            background-size: 20px 20px;
+        body {
+            background-color: #1a1a1a;
+            background-image: url('https://www.transparenttextures.com/patterns/black-chalk.png');
+            color: #f1c40f;
+            font-family: 'Special Elite', cursive;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Botón estilo Imagen Norte */
-        .btn-plato {
-            background: #1a1a1a;
-            border-left: 4px solid #facc15;
-            transition: all 0.1s;
+        .main-container {
+            border: 10px solid #8e44ad; /* Borde color vino sutil */
+            border-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png') 30 round;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
         }
-        .btn-plato:active { transform: scale(0.95); background: #facc15; color: #000; }
 
-        .active-cat { border-bottom: 3px solid #facc15; color: #facc15; }
-        
-        [v-cloak] { display: none; }
+        header {
+            text-align: center;
+            border-bottom: 2px dashed #f1c40f;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 3.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            color: #fff;
+            text-shadow: 2px 2px #000;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #f1c40f;
+            margin-top: 5px;
+        }
+
+        .menu-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .item-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-cover;
+            border: 2px solid #f1c40f;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin: 0;
+        }
+
+        .item-desc {
+            font-size: 0.9rem;
+            color: #bbb;
+            margin: 5px 0;
+        }
+
+        .item-price {
+            font-size: 1.3rem;
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .btn-whatsapp {
+            background-color: #25d366;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-family: sans-serif;
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1ebe57;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            color: #555;
+            text-align: center;
+        }
     </style>
 </head>
-<body class="bg-pizarra">
-    <div id="app" v-cloak class="h-screen flex flex-col p-4">
-        
-        <header class="flex justify-between items-center mb-4">
-            <div>
-                <h1 class="text-bodegon text-2xl uppercase italic leading-none">EL BODEGÓN</h1>
-                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Sabor Casero - Río Grande</p>
-            </div>
-            <div class="text-right">
-                <div class="text-[#facc15] flex items-center gap-1 justify-end">
-                    <span class="text-[10px] font-bold uppercase">Carrito</span>
-                    <span class="bg-[#facc15] text-black px-2 rounded-full text-xs font-black">{{ pedido.length }}</span>
-                </div>
-            </div>
+<body>
+
+    <div class="main-container">
+        <header>
+            <h1>EL BODEGÓN</h1>
+            <div class="subtitle">Lo de Fabian - Río Grande</div>
         </header>
 
-        <nav class="flex justify-between border-b border-zinc-800 mb-4 pb-2 overflow-x-auto no-scrollbar">
-            <button v-for="c in categorias" @click="catActual = c" 
-                    :class="['text-[11px] font-black uppercase px-2 py-1 transition-all', catActual === c ? 'active-cat' : 'text-zinc-500']">
-                {{ c }}
-            </button>
-        </nav>
-
-        <main class="flex-grow grid grid-cols-1 gap-3 overflow-hidden">
-            <button v-for="p in platosFiltrados" @click="agregar(p)" 
-                    class="btn-plato relative flex items-center justify-between p-3 rounded-r-xl overflow-hidden h-24">
-                
-                <div class="text-left z-10">
-                    <h3 class="text-lg font-black uppercase leading-tight">{{ p.nombre }}</h3>
-                    <p class="text-[10px] text-zinc-400 italic">{{ p.desc }}</p>
-                    <div class="mt-1">
-                        <span class="bg-[#facc15] text-black px-2 py-0.5 text-xs font-black rounded-md">${{ p.precio }}</span>
-                    </div>
-                </div>
-
-                <div class="absolute right-0 h-full w-32 opacity-40">
-                    <img :src="p.img" class="h-full w-full object-cover">
-                </div>
-                
-                <div class="z-10 bg-black/50 p-2 rounded-full border border-yellow-500/30">
-                    <span class="text-xs">➕</span>
-                </div>
-            </button>
-        </main>
-
-        <footer class="mt-4 space-y-3">
-            <div class="grid grid-cols-2 gap-2">
-                <button v-for="s in sucursales" @click="sucursalSel = s"
-                        :class="['p-2 rounded-lg text-center border transition-all', sucursalSel.id === s.id ? 'bg-[#facc15] border-yellow-500 text-black' : 'bg-zinc-900 border-zinc-800 text-zinc-400']">
-                    <p class="text-[8px] font-bold uppercase leading-none">{{ s.nombre }}</p>
-                    <p class="text-[10px] font-black italic">{{ s.tel_display }}</p>
-                </button>
+        <div class="menu-item">
+            <img src="https://images.unsplash.com/photo-1594179047519-f347310d3322?q=80&w=300&auto=format&fit=crop" alt="Lomo Completo" class="item-img">
+            <div class="item-details">
+                <p class="item-name">LOMO COMPLETO</p>
+                <p class="item-desc">Huevo, jamón, queso, lechuga, tomate y la salsa de la casa.</p>
+                <span class="item-price">$ 8.500</span>
             </div>
+        </div>
 
-            <button @click="enviarWhatsApp" 
-                    :disabled="pedido.length === 0"
-                    class="w-full py-4 rounded-2xl font-black uppercase tracking-tighter text-lg flex items-center justify-center gap-2 transition-all shadow-xl"
-                    :class="pedido.length > 0 ? 'bg-green-600 text-white animate-pulse' : 'bg-zinc-800 text-zinc-600'">
-                🚀 ENVIAR A DOMICILIO
-            </button>
-        </footer>
+        <div class="menu-item">
+            <img src="https://images.unsplash.com/photo-1606854421111-927b5f1a9b2b?q=80&w=300&auto=format&fit=crop" alt="Milanesa con Papas" class="item-img">
+            <div class="item-details">
+                <p class="item-name">MILANESA XL</p>
+                <p class="item-desc">A la napolitana con papas fritas a caballo.</p>
+                <span class="item-price">$ 7.200</span>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format&fit=crop" alt="Hamburguesa Casera" class="item-img">
+            <div class="item-details">
+                <p class="item-name">BURGER CASERA</p>
+                <p class="item-desc">Doble carne, cheddar, bacon y cebolla caramelizada.</p>
+                <span class="item-price">$ 6.500</span>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="https://wa.me/5492964000000?text=Hola!%20Vengo%20desde%20la%20App" class="btn-whatsapp">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 25px; height: 25px;">
+                PEDIR POR WHATSAPP
+            </a>
+        </div>
     </div>
 
-    <script>
-        const { createApp } = Vue;
-        createApp({
-            data() {
-                return {
-                    catActual: 'ESPECIALIDADES',
-                    sucursalSel: { id: 1, nombre: 'SARMIENTO', tel: '5492964404950', tel_display: '2964 40-4950' },
-                    categorias: ['INICIO', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
-                    sucursales: [
-                        { id: 1, nombre: 'SARMIENTO', tel: '5492964404950', tel_display: '2964 40-4950' },
-                        { id: 2, nombre: 'CABO PRIMERO', tel: '5492964404952', tel_display: '2964 40-4952' }
-                    ],
-                    pedido: [],
-                    platos: [
-                        { id: 1, cat: 'ESPECIALIDADES', nombre: 'MILAGRUESA', precio: 7200, desc: 'Milanesa Gigante', img: 'https://via.placeholder.com/150' },
-                        { id: 2, cat: 'ESPECIALIDADES', nombre: 'LOMOSAURIO', precio: 8500, desc: 'Sándwich de Lomo Premium', img: 'https://via.placeholder.com/150' },
-                        { id: 3, cat: 'PROMOCIONES', nombre: 'PROMO BURGER', precio: 5500, desc: 'Doble carne + gaseosa', img: 'https://via.placeholder.com/150' }
-                    ]
-                }
-            },
-            computed: {
-                platosFiltrados() {
-                    return this.platos.filter(p => p.cat === this.catActual);
-                },
-                total() {
-                    return this.pedido.reduce((acc, p) => acc + p.precio, 0);
-                }
-            },
-            methods: {
-                agregar(p) {
-                    this.pedido.push(p);
-                },
-                enviarWhatsApp() {
-                    let lista = this.pedido.map(p => `• ${p.nombre}`).join('\n');
-                    let msg = encodeURIComponent(`📦 *NUEVO PEDIDO: EL BODEGÓN*\n📍 Sucursal: ${this.sucursalSel.nombre}\n\n${lista}\n\n💰 *Total: $${this.total}*`);
-                    window.open(`https://wa.me/${this.sucursalSel.tel}?text=${msg}`);
-                }
-            }
-        }).mount('#app')
-    </script>
+    <footer>
+        Hecho con tiza y carbón para El Bodegón - 2026
+    </footer>
+
 </body>
 </html>
