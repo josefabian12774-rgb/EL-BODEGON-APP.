@@ -17,21 +17,21 @@
         
         .bg-bodegon {
             background-color: #121212;
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://www.transparenttextures.com/patterns/black-chalk.png');
+            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://www.transparenttextures.com/patterns/black-chalk.png');
             background-size: cover; height: 100dvh; display: flex; flex-direction: column;
         }
 
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
         /* Animación Palpitar para Menú Diario */
-        @keyframes heartbeat {
+        @keyframes heartBeat {
             0% { transform: scale(1); }
             14% { transform: scale(1.1); }
             28% { transform: scale(1); }
             42% { transform: scale(1.1); }
             70% { transform: scale(1); }
         }
-        .pulse-menu { animation: heartbeat 2s infinite ease-in-out; }
+        .pulse-menu { animation: heartBeat 1.5s infinite ease-in-out; }
 
         .btn-action { 
             background: #facc15; color: #000; font-weight: 900; 
@@ -41,7 +41,7 @@
         }
         .btn-action:active { transform: translateY(2px); box-shadow: 0 2px 0px #b48a04; }
 
-        .img-main { height: 100px; width: 100px; border-radius: 50%; border: 4px solid #333; object-fit: cover; background: #222; }
+        .img-main { height: 105px; width: 105px; border-radius: 50%; border: 4px solid #333; object-fit: cover; background: #222; }
         .img-grid { width: 100%; aspect-ratio: 1/1; border-radius: 12px; object-fit: cover; border: 1px solid #444; background: #222; }
 
         [v-cloak] { display: none; }
@@ -74,7 +74,7 @@
 
         <main class="flex flex-col justify-around py-2 h-[40%]">
             <div v-for="p in destacados" :key="p.id" class="flex items-center gap-4">
-                <img :src="p.img" class="img-main">
+                <img :src="p.img" class="img-main shadow-2xl">
                 <div class="flex-1">
                     <h2 class="text-2xl italic text-yellow-400 uppercase leading-none">{{ p.nombre }}</h2>
                     <p class="text-[10px] text-zinc-400 italic leading-tight mb-2">{{ p.desc }}</p>
@@ -88,7 +88,7 @@
 
         <section class="grid grid-cols-4 gap-2 border-t border-zinc-800 pt-3 h-[18%]">
             <div v-for="p in mini" :key="p.id" class="flex flex-col">
-                <img :src="p.img" class="img-grid mb-1">
+                <img :src="p.img" class="img-grid mb-1 shadow-lg">
                 <p class="text-[7px] font-black uppercase text-center text-zinc-300 leading-none h-4 overflow-hidden mb-1">{{ p.nombre }}</p>
                 <button @click="agregar(p)" class="btn-action text-[8px] py-1">Añadir</button>
             </div>
@@ -98,13 +98,13 @@
             <div class="grid grid-cols-2 gap-2">
                 <div class="bg-white rounded-2xl p-2 text-black shadow-lg text-center">
                     <p class="text-[10px] font-black uppercase leading-none">SARMIENTO</p>
-                    <p class="text-[8px] font-bold opacity-70 mb-1">Sarmiento 2307</p>
-                    <p class="text-[10px] font-black">📞 40-4950</p>
+                    <p class="text-[8px] font-bold opacity-70">Sarmiento 2307</p>
+                    <p class="text-[10px] font-black mt-0.5">📞 40-4950</p>
                 </div>
                 <div class="bg-white rounded-2xl p-2 text-black shadow-lg text-center">
                     <p class="text-[10px] font-black uppercase leading-none">CABO PRIMERO</p>
-                    <p class="text-[8px] font-bold opacity-70 mb-1">Gomez 2331</p>
-                    <p class="text-[10px] font-black">📞 40-4952</p>
+                    <p class="text-[8px] font-bold opacity-70">Gomez 2331</p>
+                    <p class="text-[10px] font-black mt-0.5">📞 40-4952</p>
                 </div>
             </div>
             <button @click="enviar" class="w-full bg-white text-black py-4 rounded-2xl font-black uppercase flex items-center justify-center gap-2 text-sm shadow-xl active:scale-95 transition-all">
@@ -124,7 +124,7 @@
                     pedido: [],
                     destacados: [
                         { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa gigante con papas fritas y huevos fritos.', precio: 7200, img: 'https://images.unsplash.com/photo-1599923262650-d7ce932b7058?q=80&w=400' },
-                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Lomo tierno, jamón, queso y huevo frito.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
+                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Lomo tierno premium, jamón, queso y huevo frito.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
                     ],
                     mini: [
                         { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1614088685112-0a760b71a3c8?q=80&w=200' },
@@ -138,7 +138,7 @@
                 agregar(p) { this.pedido.push(p); },
                 enviar() {
                     if(this.pedido.length === 0) return alert("¡Elegí algo rico primero!");
-                    alert("¡Pedido en camino! Items: " + this.pedido.length);
+                    alert("¡Pedido en camino! Total items: " + this.pedido.length);
                 }
             }
         }).mount('#app')
