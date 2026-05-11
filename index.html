@@ -3,78 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EL BODEGÓN | Menú Digital</title>
+    <title>EL BODEGÓN - Imagen Norte</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #121212; color: #fff; font-family: 'Roboto Condensed', sans-serif; overflow-x: hidden; }
-        .text-bodegon { font-family: 'Oswald', sans-serif; color: #facc15; }
-        .bg-pizarra { background-image: url('https://www.transparenttextures.com/patterns/black-chalk.png'); }
-        .btn-yellow { background: #facc15; color: #000; font-weight: 900; text-transform: uppercase; border-radius: 9999px; }
-        .active-tab { color: #facc15; border-bottom: 2px solid #facc15; }
-        .card-menu { background: #1a1a1a; border-radius: 15px; overflow: hidden; }
+        body { background: #0c0c0c; color: #fff; font-family: 'Roboto Condensed', sans-serif; }
+        .text-yellow { color: #facc15; }
+        .font-oswald { font-family: 'Oswald', sans-serif; }
+        
+        /* Contenedor principal para evitar scroll innecesario */
+        .app-container { max-width: 450px; margin: 0 auto; min-height: 100vh; padding: 15px; }
+
+        /* Botones superiores circulares/cuadrados suaves */
+        .header-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        /* Estilo de los platos principales (Imagen Izquierda + Info Derecha) */
+        .main-dish-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .main-dish-img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 3px solid #222;
+            object-fit: cover;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Grilla inferior de 4 columnas */
+        .mini-grid {
+            display: grid;
+            grid-template-cols: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .mini-card img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid #333;
+        }
+
+        /* Botón Añadir Amarillo */
+        .btn-add {
+            background: #facc15;
+            color: #000;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-top: 5px;
+        }
+
         [v-cloak] { display: none; }
     </style>
 </head>
-<body class="bg-pizarra min-h-screen p-4">
-    <div id="app" v-cloak class="max-w-md mx-auto">
+<body>
+    <div id="app" v-cloak class="app-container">
         
-        <header class="flex justify-between items-center mb-4 pt-2">
-            <button class="flex flex-col items-center">
-                <div class="bg-zinc-800 p-2 rounded-lg border border-zinc-700">
-                    <span class="text-xl">📅</span>
-                </div>
-                <span class="text-[9px] uppercase font-bold mt-1 text-zinc-400 leading-none">Menú<br>Diario</span>
-            </button>
-
-            <div class="text-center">
-                <h1 class="text-bodegon text-4xl italic leading-none">EL BODEGÓN</h1>
+        <header class="flex justify-between items-start mb-6">
+            <div class="flex flex-col items-center">
+                <button class="header-btn">
+                    <span class="text-2xl">📋</span>
+                </button>
+                <span class="text-[9px] uppercase font-bold mt-1 text-zinc-500 text-center leading-tight">Menú<br>Diario</span>
             </div>
 
-            <button class="flex flex-col items-center">
-                <div class="relative">
+            <div class="text-center pt-2">
+                <h1 class="font-oswald text-4xl italic text-yellow leading-none tracking-tighter uppercase">EL BODEGÓN</h1>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <button class="header-btn relative">
                     <span class="text-2xl text-yellow-500">🛒</span>
-                    <span class="absolute -top-1 -right-2 bg-white text-black text-[10px] font-black px-1.5 rounded-full">{{ carrito.length }}</span>
-                </div>
-                <span class="text-[9px] uppercase font-bold mt-1 text-zinc-400 leading-none">Carrito<br>{{ carrito.length }} items</span>
-            </button>
+                    <span class="absolute -top-1 -right-1 bg-white text-black text-[10px] font-black px-1.5 rounded-full border border-black">{{ carrito.length }}</span>
+                </button>
+                <span class="text-[9px] uppercase font-bold mt-1 text-zinc-500 text-center leading-tight">Carrito<br>{{ carrito.length }} Items</span>
+            </div>
         </header>
 
-        <nav class="flex justify-between border-b border-zinc-800 mb-6 pb-2 overflow-x-auto no-scrollbar text-[11px] font-bold uppercase tracking-tighter">
-            <button v-for="c in categorias" @click="catActual = c" :class="catActual === c ? 'active-tab' : 'text-zinc-500'" class="px-2 pb-1">{{ c }}</button>
+        <nav class="flex justify-between border-b border-zinc-800 mb-8 pb-2 text-[11px] font-bold uppercase text-zinc-500 tracking-tighter">
+            <button v-for="c in categorias" @click="catActual = c" :class="{'text-yellow border-b-2 border-yellow': catActual === c}" class="px-1 pb-1">
+                {{ c }}
+            </button>
         </nav>
 
-        <section class="space-y-6">
-            <div v-for="p in platosPrincipales" :key="p.id" class="flex gap-4 items-center">
+        <section class="space-y-8">
+            <div v-for="p in platosPrincipales" :key="p.id" class="main-dish-card">
                 <div class="w-1/2">
-                    <img :src="p.img" class="rounded-full shadow-2xl border-2 border-zinc-800 object-cover aspect-square">
+                    <img :src="p.img" class="main-dish-img">
                 </div>
                 <div class="w-1/2">
-                    <h2 class="text-bodegon text-2xl uppercase leading-none">{{ p.nombre }}</h2>
-                    <p class="text-[10px] text-zinc-400 italic mb-1">{{ p.desc }}</p>
-                    <div class="flex items-center justify-between mt-2">
-                        <span class="text-xl font-bold font-mono">${{ p.precio }}</span>
-                        <button @click="agregar(p)" class="btn-yellow px-4 py-1.5 text-[10px]">Agregar al pedido</button>
+                    <h2 class="font-oswald text-3xl italic text-yellow uppercase leading-none">{{ p.nombre }}</h2>
+                    <p class="text-[10px] text-zinc-400 italic leading-tight mt-1">{{ p.desc }}</p>
+                    <div class="flex items-center justify-between mt-3">
+                        <span class="text-xl font-bold font-mono">$ {{ p.precio }}</span>
+                        <button @click="agregar(p)" class="btn-add">Agregar</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="grid grid-cols-4 gap-2 mt-8">
-            <div v-for="p in platosMini" :key="p.id" class="text-center">
-                <img :src="p.img" class="w-full aspect-square object-cover rounded-xl mb-1 shadow-lg">
-                <p class="text-[8px] font-black uppercase leading-tight h-6 flex items-center justify-center">{{ p.nombre }}</p>
-                <button @click="agregar(p)" class="btn-yellow w-full py-1 text-[8px] mt-1">Agregar</button>
+        <section class="mini-grid">
+            <div v-for="p in platosMini" :key="p.id" class="mini-card flex flex-col items-center">
+                <img :src="p.img">
+                <p class="text-[8px] font-black uppercase text-center mt-2 leading-none h-4">{{ p.nombre }}</p>
+                <button @click="agregar(p)" class="btn-add text-[7px] py-1 px-2">Agregar</button>
             </div>
         </section>
 
-        <section class="mt-10">
-            <h3 class="text-center font-black uppercase italic mb-4 tracking-widest">Sucursales:</h3>
-            <div class="grid grid-cols-2 gap-3">
-                <div v-for="s in sucursales" @click="sucursalSel = s" 
-                     :class="sucursalSel.id === s.id ? 'bg-white text-black' : 'bg-zinc-900 text-zinc-400'"
-                     class="p-3 rounded-2xl transition-all cursor-pointer">
-                    <p class="text-[12px] font-black uppercase">{{ s.nombre }}</p>
-                    <p class="text-[9px] font-bold">{{ s.dir }}</p>
-                    <p class="text-[10px] font-black mt-1">📞 {{ s.tel_
+        <footer class="mt-12 mb-8">
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <button v-for="s in sucursales" @click="sucursalSel = s" 
+                        :class="sucursalSel.id === s.id ? 'bg-white text-black' : 'bg-zinc-900 text-zinc-500 border border-zinc-800'"
+                        class="p-3 rounded-2xl text-left transition-all">
+                    <p class="text-[11px] font-black uppercase leading-none">{{ s.nombre }}</p>
+                    <p class="text-[9px] font-bold opacity-70">{{ s.dir }}</p>
+                </button>
+            </div>
+            
+            <button @click="enviarWhatsApp" class="w-full bg-zinc-200 text-black py-4 rounded-2xl font-black uppercase flex items-center justify-center gap-3 text-sm active:scale-95 transition-all">
+                <span>ENVIAR PEDIDO A DOMICILIO</span>
+                <span class="text-xl">🛵</span>
+            </button>
+        </footer>
+
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    catActual: 'ESPECIALIDADES',
+                    sucursalSel: { id: 1, nombre: 'SARMIENTO', dir: 'Sarmiento 2307', tel: '5492964404950' },
+                    categorias: ['INICIO', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
+                    sucursales: [
+                        { id: 1, nombre: 'SARMIENTO', dir: 'Sarmiento 2307', tel: '5492964404950' },
+                        { id: 2, nombre: 'CABO 1RO GOMEZ', dir: 'Gomez 2331', tel: '5492964404952' }
+                    ],
+                    carrito: [],
+                    platosPrincipales: [
+                        { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa Gigante de la casa con papas fritas.', precio: 7200, img: 'https://images.unsplash.com/photo-1599923262650-d7ce932b7058?q=80&w=400' },
+                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Sándwich de lomo premium completo.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
+                    ],
+                    platosMini: [
+                        { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1614088685112-0a760b71a3c8?q=80&w=200' },
+                        { id: 4, nombre: 'HAMBURGUESA', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200' },
+                        { id: 5, nombre: 'PAPAS FRITAS', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=200' },
+                        { id: 6, nombre: 'PIZZAS', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=200' }
+                    ]
+                }
+            },
+            methods: {
+                agregar(p) { this.carrito.push(p); },
+                enviarWhatsApp() {
+                    if (this.carrito.length === 0) return alert("Agregá productos al pedido");
+                    let lista = this.carrito.map(p => `• ${p.nombre}`).join('\n');
+                    let msg = encodeURIComponent(`🍽️ *PEDIDO EL BODEGÓN*\n📍 Sucursal: ${this.sucursalSel.nombre}\n\n${lista}`);
+                    window.open(`https://wa.me/${this.sucursalSel.tel}?text=${msg}`);
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
