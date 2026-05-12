@@ -21,7 +21,6 @@
         }
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
-        /* Animaciones */
         @keyframes heartBeat {
             0% { transform: scale(1); }
             14% { transform: scale(1.1); }
@@ -75,6 +74,16 @@
         </nav>
 
         <div class="flex-1 overflow-hidden">
+            
+            <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="h-full flex flex-col items-center justify-center text-center p-4">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400" class="img-main w-32 h-32 mb-4">
+                <h2 class="font-marker text-3xl text-yellow-400 uppercase">Costillitas Riojanas</h2>
+                <p class="italic text-zinc-400 text-sm mt-2 leading-relaxed">
+                    "Si el hambre es un viaje, este plato es el pasaje de ida. <br> Vení a probar el sabor que no se explica, se siente."
+                </p>
+                <button @click="agregar({nombre:'Menú del Día', precio: 6500})" class="btn-action mt-6 max-w-[150px]">¡Lo quiero!</button>
+            </div>
+
             <div v-if="tabActiva === 'ESPECIALIDADES'" class="h-full flex flex-col">
                 <main class="flex flex-col justify-around py-2 h-[70%]">
                     <div v-for="p in destacados" :key="p.id" class="flex items-center gap-4">
@@ -97,8 +106,30 @@
                     </div>
                 </section>
             </div>
-            <div v-else class="h-full flex items-center justify-center text-zinc-500 uppercase text-xs tracking-widest">
-                Contenido de {{ tabActiva }}
+
+            <div v-if="tabActiva === 'PROMOCIONES'" class="h-full flex flex-col justify-center items-center text-center p-4">
+                <h2 class="font-marker text-4xl text-yellow-400 mb-4 uppercase">¡Combos Locos!</h2>
+                <div class="bg-zinc-900 p-6 rounded-3xl border-2 border-dashed border-yellow-400 shadow-2xl">
+                    <p class="text-xl italic">Próximamente...</p>
+                    <p class="text-sm text-zinc-500 mt-2">Estamos cocinando las mejores promos para vos.</p>
+                </div>
+            </div>
+
+            <div v-if="tabActiva === 'CONTACTO'" class="h-full flex flex-col justify-center gap-4 p-4">
+                <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 text-center shadow-lg">
+                    <p class="text-yellow-400 font-bold uppercase text-xs mb-3">Nuestras Redes</p>
+                    <div class="flex justify-center gap-8 text-3xl">
+                        <span class="hover:scale-125 transition-transform cursor-pointer">📸</span>
+                        <span class="hover:scale-125 transition-transform cursor-pointer">📘</span>
+                        <span class="hover:scale-125 transition-transform cursor-pointer">💬</span>
+                    </div>
+                    <p class="mt-3 text-zinc-500 text-[10px] tracking-widest font-bold">@ELBODEGON.RG</p>
+                </div>
+                <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 text-center shadow-lg">
+                    <p class="text-yellow-400 font-bold uppercase text-xs mb-2">Horarios de Cocina</p>
+                    <p class="text-xs font-bold">LUNES A SÁBADOS</p>
+                    <p class="text-xs text-zinc-400">11:00 - 15:00 | 20:00 - 23:30</p>
+                </div>
             </div>
         </div>
 
