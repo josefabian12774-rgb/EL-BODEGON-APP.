@@ -20,6 +20,7 @@
             background-size: cover; height: 100dvh; display: flex; flex-direction: column;
         }
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
+        
         @keyframes heartBeat {
             0% { transform: scale(1); }
             14% { transform: scale(1.1); }
@@ -28,6 +29,7 @@
             70% { transform: scale(1); }
         }
         .pulse-menu { animation: heartBeat 1.5s infinite ease-in-out; }
+
         .btn-action { 
             background: #facc15; color: #000; font-weight: 900; 
             font-size: 11px; text-transform: uppercase; padding: 6px 0; 
@@ -35,13 +37,16 @@
             box-shadow: 0 4px 0px #b48a04;
         }
         .btn-action:active { transform: translateY(2px); box-shadow: 0 2px 0px #b48a04; }
+
         .img-main { height: 105px; width: 105px; border-radius: 50%; border: 4px solid #333; object-fit: cover; background: #222; }
         .img-grid { width: 100%; aspect-ratio: 1/1; border-radius: 12px; object-fit: cover; border: 1px solid #444; background: #222; }
+        
         [v-cloak] { display: none; }
     </style>
 </head>
 <body class="bg-bodegon">
     <div id="app" v-cloak class="flex flex-col h-full p-4 pt-2">
+        
         <header class="flex justify-between items-center h-[12%]">
             <div class="flex flex-col items-center">
                 <div class="bg-zinc-900 border border-zinc-800 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-lg pulse-menu">📅</div>
@@ -61,32 +66,64 @@
         </header>
 
         <nav class="flex justify-between border-b border-zinc-800 text-[11px] font-bold uppercase text-zinc-500 mt-2 h-[5%]">
-            <button v-for="t in tabs" @click="tabActiva = t" :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" class="pb-1 px-1">{{ t }}</button>
+            <button v-for="t in tabs" @click="tabActiva = t" 
+                :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" 
+                class="pb-1 px-1 transition-all duration-300">
+                {{ t }}
+            </button>
         </nav>
 
-        <main class="flex flex-col justify-around py-2 h-[40%]">
-            <div v-for="p in destacados" :key="p.id" class="flex items-center gap-4">
-                <img :src="p.img" class="img-main shadow-2xl">
-                <div class="flex-1">
-                    <h2 class="text-2xl italic text-yellow-400 uppercase leading-none">{{ p.nombre }}</h2>
-                    <p class="text-[10px] text-zinc-400 italic leading-tight mb-2">{{ p.desc }}</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-2xl font-bold font-mono">$ {{ p.precio }}</span>
-                        <button @click="agregar(p)" class="btn-action max-w-[100px]">Agregar</button>
+        <div class="flex-1 overflow-hidden">
+            
+            <div v-if="tabActiva === 'ESPECIALIDADES'" class="h-full flex flex-col">
+                <main class="flex flex-col justify-around py-2 h-[70%]">
+                    <div v-for="p in destacados" :key="p.id" class="flex items-center gap-4">
+                        <img :src="p.img" class="img-main shadow-2xl">
+                        <div class="flex-1">
+                            <h2 class="text-2xl italic text-yellow-400 uppercase leading-none">{{ p.nombre }}</h2>
+                            <p class="text-[10px] text-zinc-400 italic leading-tight mb-2">{{ p.desc }}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold font-mono">$ {{ p.precio }}</span>
+                                <button @click="agregar(p)" class="btn-action max-w-[100px]">Agregar</button>
+                            </div>
+                        </div>
                     </div>
+                </main>
+                <section class="grid grid-cols-4 gap-2 border-t border-zinc-800 pt-3 h-[30%]">
+                    <div v-for="p in mini" :key="p.id" class="flex flex-col">
+                        <img :src="p.img" class="img-grid mb-1 shadow-lg">
+                        <p class="text-[7px] font-black uppercase text-center text-zinc-300 leading-none h-4 overflow-hidden mb-1">{{ p.nombre }}</p>
+                        <button @click="agregar(p)" class="btn-action text-[8px] py-1">Añadir</button>
+                    </div>
+                </section>
+            </div>
+
+            <div v-if="tabActiva === 'PROMOCIONES'" class="h-full flex flex-col justify-center items-center text-center p-4">
+                <h2 class="font-marker text-4xl text-yellow-400 mb-4 uppercase">¡Combos Locos!</h2>
+                <div class="bg-zinc-900 p-6 rounded-3xl border-2 border-dashed border-yellow-400 shadow-2xl">
+                    <p class="text-xl italic">Próximamente...</p>
+                    <p class="text-sm text-zinc-500 mt-2">Estamos cocinando las mejores promos para vos.</p>
                 </div>
             </div>
-        </main>
 
-        <section class="grid grid-cols-4 gap-2 border-t border-zinc-800 pt-3 h-[18%]">
-            <div v-for="p in mini" :key="p.id" class="flex flex-col">
-                <img :src="p.img" class="img-grid mb-1 shadow-lg">
-                <p class="text-[7px] font-black uppercase text-center text-zinc-300 leading-none h-4 overflow-hidden mb-1">{{ p.nombre }}</p>
-                <button @click="agregar(p)" class="btn-action text-[8px] py-1">Añadir</button>
+            <div v-if="tabActiva === 'CONTACTO'" class="h-full flex flex-col justify-center gap-4">
+                <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 text-center">
+                    <p class="text-yellow-400 font-bold uppercase text-sm mb-2">Seguinos en redes</p>
+                    <div class="flex justify-center gap-6 text-2xl">
+                        <span>📸</span><span>📘</span><span>🐦</span>
+                    </div>
+                    <p class="mt-2 text-zinc-400 text-xs">@elbodegon.rg</p>
+                </div>
+                <div class="bg-zinc-900 p-4 rounded-2xl border border-zinc-800 text-center">
+                    <p class="text-yellow-400 font-bold uppercase text-sm mb-2">Horarios</p>
+                    <p class="text-xs">Lunes a Sábados: 11:00 - 23:00</p>
+                    <p class="text-xs">Domingos: Cerrado</p>
+                </div>
             </div>
-        </section>
 
-        <footer class="flex flex-col justify-end gap-3 pb-2 h-[25%]">
+        </div>
+
+        <footer class="flex flex-col justify-end gap-3 pb-2 h-[25%] mt-2">
             <div class="grid grid-cols-2 gap-2">
                 <div class="bg-white rounded-2xl p-2 text-black shadow-lg text-center">
                     <p class="text-[10px] font-black uppercase leading-none">SARMIENTO</p>
@@ -118,7 +155,7 @@
                         { id: 2, nombre: 'LOMOSAURIO', desc: 'Lomo tierno premium, jamón, queso y huevo frito.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
                     ],
                     mini: [
-                        { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1614088685112-0a760b71a3c8?q=80&w=200' },
+                        { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1628102476629-f81c107ce83d?q=80&w=200' }, // IMAGEN DE EMPANADA REAL
                         { id: 4, nombre: 'HAMBURGUESA', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200' },
                         { id: 5, nombre: 'PAPAS FRITAS', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=200' },
                         { id: 6, nombre: 'PIZZAS', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=200' }
