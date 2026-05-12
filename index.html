@@ -38,12 +38,10 @@
         }
         .btn-action:active { transform: translateY(2px); box-shadow: 0 2px 0px #b48a04; }
 
-        /* Fotos rectangulares para especialidades */
         .img-especialidad { height: 110px; width: 110px; border-radius: 16px; border: 2px solid #333; object-fit: cover; }
         .img-grid { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; border: 1px solid #333; }
         
-        /* Tarjeta Menú del Día (Ravioles) */
-        .card-menu {
+        .card-pizarra {
             background: #1a1a1a;
             border: 2px solid #333;
             border-radius: 20px;
@@ -87,20 +85,20 @@
         <div class="flex-1 overflow-hidden mt-3">
             
             <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="h-full flex flex-col items-center justify-start pt-2">
-                <div class="card-menu">
+                <div class="card-pizarra">
                     <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=800" class="w-full h-48 object-cover border-b-2 border-zinc-800" alt="Ravioles">
                     <div class="p-4">
                         <div class="flex justify-between items-start">
                             <div>
                                 <h2 class="font-marker text-3xl text-yellow-400 uppercase leading-none">Ravioles Caseros</h2>
-                                <p class="text-zinc-400 italic text-[11px] mt-1 uppercase">Con estofado y mucho queso rayado</p>
+                                <p class="text-zinc-400 italic text-[11px] mt-1">"Con tuco de bodegón y lluvia de queso"</p>
                             </div>
-                            <span class="text-2xl font-bold font-mono text-white">$6.500</span>
+                            <span class="text-2xl font-bold font-mono">$6.500</span>
                         </div>
-                        <button @click="agregar({nombre:'Menú Ravioles', precio: 6500})" class="btn-action mt-4">¡Sumar al Carrito!</button>
+                        <button @click="agregar({nombre:'Menú Ravioles', precio: 6500})" class="btn-action mt-4">¡Agregar al Carrito!</button>
                     </div>
                 </div>
-                <p class="font-marker text-xl text-zinc-600 italic uppercase mt-8">"Comé como en casa"</p>
+                <p class="font-marker text-xl text-zinc-600 italic uppercase mt-8 text-center">"Como lo hacía la abuela"</p>
             </div>
 
             <div v-if="tabActiva === 'ESPECIALIDADES'" class="h-full flex flex-col">
@@ -177,8 +175,8 @@
                     tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
                     pedido: [],
                     destacados: [
-                        { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa gigante con fritas y huevos fritos.', precio: 7200, img: 'https://images.unsplash.com/photo-1632778149975-4203d4f291d8?q=80&w=400' },
-                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Sándwich de lomo completo con papas fritas.', precio: 8500, img: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9581ba?q=80&w=400' }
+                        { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa gigante con papas fritas y huevos fritos.', precio: 7200, img: 'https://images.unsplash.com/photo-1594179200424-64448555e7bc?q=80&w=400' },
+                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Lomo tierno, jamón, queso, huevo y fritas.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
                     ],
                     mini: [
                         { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1628102476629-f81c107ce83d?q=80&w=200' },
