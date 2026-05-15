@@ -21,46 +21,33 @@
         }
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
-        /* NEXOSTATICAD: Ajuste de posición final */
+        /* NEXOSTATICAD: Integración lateral derecha */
         #nexo-static-ad {
             position: fixed;
             bottom: 20px; 
             right: 15px; 
-            width: 25vw; /* Tamaño optimizado para el hueco */
-            max-width: 100px;
+            width: 25vw;
+            max-width: 95px;
             aspect-ratio: 9/16;
             background: #000;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid rgba(250, 204, 21, 0.3);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            box-shadow: 0 0 20px rgba(0,0,0,0.9);
             z-index: 100;
             display: none;
         }
 
-        /* Contenedor de comandos (70% de ancho para dejar espacio al video) */
-        .footer-controls {
-            width: 72%;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .footer-controls { width: 70%; display: flex; flex-direction: column; gap: 8px; }
 
         .btn-sucursal {
-            border-radius: 12px;
-            padding: 8px 4px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            flex: 1;
+            border-radius: 12px; padding: 10px 4px; text-align: center;
+            transition: all 0.3s ease; cursor: pointer; flex: 1; border: 1px solid transparent;
         }
-        .btn-sucursal p { font-size: 9px; font-weight: 900; text-transform: uppercase; }
+        .btn-sucursal p { font-size: 9px; font-weight: 900; text-transform: uppercase; line-height: 1; }
 
-        .card-menu {
-            background: #1a1a1a; border: 2px solid #333; border-radius: 20px;
-            overflow: hidden; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.7);
-        }
-
+        .img-especialidad { height: 90px; width: 90px; border-radius: 12px; object-fit: cover; border: 1px solid #333; }
+        
         [v-cloak] { display: none; }
     </style>
 </head>
@@ -75,51 +62,73 @@
         </div>
 
         <header class="flex justify-between items-center h-[10%]">
-            <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center text-lg">📅</div>
-            </div>
-            <div class="text-center">
-                <h1 class="font-marker text-2xl italic tracking-tighter uppercase leading-none">EL BODEGÓN</h1>
-            </div>
-            <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center relative text-yellow-500">🛒</div>
+            <div class="bg-zinc-900 w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-inner">📅</div>
+            <h1 class="font-marker text-2xl italic tracking-tighter uppercase text-center">EL BODEGÓN</h1>
+            <div class="bg-zinc-900 w-10 h-10 rounded-xl flex items-center justify-center relative text-yellow-500">
+                🛒 <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-bold px-1 rounded-full">{{ pedido.length }}</span>
             </div>
         </header>
 
-        <nav class="flex justify-between border-b border-zinc-800 text-[10px] font-bold uppercase text-zinc-500 mt-2 h-[5%]">
+        <nav class="flex justify-between border-b border-zinc-800 text-[10px] font-bold uppercase text-zinc-400 mt-2 h-[5%]">
             <button v-for="t in tabs" @click="tabActiva = t" :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" class="pb-1 px-1">{{ t }}</button>
         </nav>
 
-        <div class="flex-1 overflow-hidden mt-3">
-            <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="h-full flex flex-col items-center pt-2">
-                <div class="card-menu">
-                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=800" class="w-full h-44 object-cover">
-                    <div class="p-4 bg-zinc-900/50 text-center">
+        <div class="flex-1 overflow-y-auto mt-4 pr-1">
+            
+            <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="flex flex-col items-center">
+                <div class="bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden w-full">
+                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600" class="w-full h-40 object-cover">
+                    <div class="p-4 text-center">
                         <h2 class="font-marker text-2xl text-yellow-400 uppercase">Ravioles Caseros</h2>
-                        <p class="text-white font-bold font-mono text-xl mt-1">$6.500</p>
-                        <button class="w-full bg-[#facc15] text-black font-black py-2 rounded-lg mt-3 text-xs uppercase">Añadir al pedido</button>
+                        <p class="text-zinc-400 text-xs italic mb-2">Con estofado de ternera</p>
+                        <p class="text-white font-bold font-mono text-xl">$6.500</p>
+                        <button @click="agregar({nombre:'Ravioles', precio:6500})" class="w-full bg-yellow-400 text-black font-black py-2 rounded-xl mt-3 text-xs uppercase">Añadir</button>
                     </div>
+                </div>
+            </div>
+
+            <div v-if="tabActiva === 'ESPECIALIDADES'" class="flex flex-col gap-4">
+                <div v-for="p in platos" class="flex gap-4 items-center bg-zinc-900/50 p-2 rounded-2xl">
+                    <img :src="p.img" class="img-especialidad">
+                    <div class="flex-1">
+                        <h3 class="text-lg leading-none uppercase font-bold">{{ p.nombre }}</h3>
+                        <p class="text-[10px] text-zinc-500 italic mb-1">{{ p.desc }}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="font-mono font-bold text-yellow-400">$ {{ p.precio }}</span>
+                            <button @click="agregar(p)" class="bg-white text-black px-3 py-1 rounded-lg text-[9px] font-black uppercase">Añadir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="tabActiva === 'CONTACTO'" class="flex flex-col items-center justify-center h-full text-center p-4">
+                <div class="bg-zinc-900 border border-zinc-800 p-6 rounded-3xl w-full">
+                    <p class="text-yellow-400 font-bold uppercase text-xs mb-4">Seguinos</p>
+                    <div class="flex justify-center gap-8 text-3xl mb-4">
+                        <span>📸</span><span>📘</span><span>💬</span>
+                    </div>
+                    <p class="text-[9px] text-zinc-500 uppercase tracking-widest font-black">Río Grande, Tierra del Fuego</p>
                 </div>
             </div>
         </div>
 
-        <footer class="flex items-end pb-4 h-[25%]">
+        <footer class="flex items-end pb-4 h-[22%]">
             <div class="footer-controls">
                 <div class="flex gap-2">
-                    <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black' : 'bg-white text-black'" class="btn-sucursal">
+                    <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black border-white shadow-lg' : 'bg-white text-black border-transparent'" class="btn-sucursal border-2">
                         <p>SARMIENTO</p>
-                        <p class="text-[8px] opacity-60">40-4950</p>
+                        <p class="text-[7px] opacity-70">40-4950</p>
                     </div>
-                    <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black' : 'bg-white text-black'" class="btn-sucursal">
+                    <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black border-white shadow-lg' : 'bg-white text-black border-transparent'" class="btn-sucursal border-2">
                         <p>CABO 1°</p>
-                        <p class="text-[8px] opacity-60">40-4952</p>
+                        <p class="text-[7px] opacity-70">40-4952</p>
                     </div>
                 </div>
-                <button class="w-full bg-zinc-800 text-zinc-500 py-3 rounded-xl font-black uppercase text-[9px] border border-zinc-700">
-                    CONSTRUYENDO NEXO...
+                <button class="w-full bg-zinc-900 text-zinc-500 py-3 rounded-xl font-black uppercase text-[9px] border border-zinc-800 tracking-tighter">
+                    {{ sucSel ? 'LISTO PARA PEDIR EN ' + sucSel : 'SELECCIONE SUCURSAL' }}
                 </button>
             </div>
-            </footer>
+        </footer>
     </div>
 
     <script>
@@ -129,19 +138,21 @@
                 return {
                     tabActiva: 'MENÚ DEL DÍA',
                     sucSel: null,
-                    tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO']
+                    tabs: ['MENÚ DEL DÍA', 'ESPECIALIDADES', 'CONTACTO'],
+                    pedido: [],
+                    platos: [
+                        { nombre: 'Milagruesa', desc: 'Milanesa gigante con fritas', precio: 7200, img: 'https://images.unsplash.com/photo-1594179200424-64448555e7bc?q=80&w=200' },
+                        { nombre: 'Lomosaurio', desc: 'Lomo completo para compartir', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=200' },
+                        { nombre: 'Papas Nexo', desc: 'Con cheddar y bacon', precio: 4500, img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=200' }
+                    ]
                 }
             },
             methods: {
-                toggleAudio() {
-                    const v = document.getElementById('adVideo');
-                    v.muted = !v.muted;
-                }
+                agregar(p) { this.pedido.push(p); },
+                toggleAudio() { document.getElementById('adVideo').muted = !document.getElementById('adVideo').muted; }
             },
             mounted() {
-                setTimeout(() => {
-                    document.getElementById('nexo-static-ad').style.display = 'block';
-                }, 2000);
+                setTimeout(() => { document.getElementById('nexo-static-ad').style.display = 'block'; }, 2000);
             }
         }).mount('#app')
     </script>
