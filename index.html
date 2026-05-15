@@ -21,12 +21,13 @@
         }
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
-        /* NexoStaticAd: Posición Extremo Derecho */
+        /* NEXOSTATICAD: Ajuste de posición final */
         #nexo-static-ad {
             position: fixed;
-            bottom: 95px; 
-            right: 15px; /* Cambio Mandatorio: Extremo Derecho */
-            width: 110px;
+            bottom: 20px; 
+            right: 15px; 
+            width: 25vw; /* Tamaño optimizado para el hueco */
+            max-width: 100px;
             aspect-ratio: 9/16;
             background: #000;
             border-radius: 12px;
@@ -35,27 +36,25 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.8);
             z-index: 100;
             display: none;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @media (max-width: 480px) { #nexo-static-ad { width: 18vw; bottom: 105px; } }
 
-        /* Botones de Sucursales Recortados */
+        /* Contenedor de comandos (70% de ancho para dejar espacio al video) */
+        .footer-controls {
+            width: 72%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         .btn-sucursal {
             border-radius: 12px;
-            padding: 6px; /* Padding reducido */
+            padding: 8px 4px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
-            border: 1px solid transparent;
+            flex: 1;
         }
-        .btn-sucursal p { font-size: 9px; line-height: 1; } /* Texto más pequeño */
-
-        .btn-action { 
-            background: #facc15; color: #000; font-weight: 900; 
-            font-size: 11px; text-transform: uppercase; padding: 8px 0; 
-            border-radius: 12px; width: 100%; text-align: center;
-            box-shadow: 0 4px 0px #b48a04;
-        }
+        .btn-sucursal p { font-size: 9px; font-weight: 900; text-transform: uppercase; }
 
         .card-menu {
             background: #1a1a1a; border: 2px solid #333; border-radius: 20px;
@@ -72,23 +71,18 @@
             <video id="adVideo" loop muted playsinline autoplay style="width: 100%; height: 100%; object-fit: cover;">
                 <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-futuristic-city-4416-large.mp4" type="video/mp4">
             </video>
-            <div class="absolute top-1 left-1 text-[5px] bg-yellow-500 text-black px-1 rounded font-black uppercase">Nexo Arquetipo</div>
+            <div class="absolute top-1 left-1 text-[5px] bg-yellow-500 text-black px-1 rounded font-black uppercase">Nexo</div>
         </div>
 
         <header class="flex justify-between items-center h-[10%]">
             <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow-lg">📅</div>
-                <span class="text-[7px] uppercase font-bold mt-1 text-zinc-500">Menú</span>
+                <div class="bg-zinc-900 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center text-lg">📅</div>
             </div>
             <div class="text-center">
                 <h1 class="font-marker text-2xl italic tracking-tighter uppercase leading-none">EL BODEGÓN</h1>
-                <p class="text-[7px] tracking-[0.3em] text-zinc-600 font-bold uppercase mt-1">Río Grande</p>
             </div>
             <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center relative text-yellow-500">
-                    <span class="text-lg">🛒</span>
-                </div>
-                <span class="text-[7px] uppercase font-bold mt-1 text-zinc-500">Carrito</span>
+                <div class="bg-zinc-900 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center relative text-yellow-500">🛒</div>
             </div>
         </header>
 
@@ -97,38 +91,35 @@
         </nav>
 
         <div class="flex-1 overflow-hidden mt-3">
-            <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="h-full flex flex-col items-center justify-start pt-2">
+            <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="h-full flex flex-col items-center pt-2">
                 <div class="card-menu">
-                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=800" class="w-full h-44 object-cover border-b-2 border-zinc-800">
-                    <div class="p-4 bg-zinc-900/50">
-                        <div class="flex justify-between items-center">
-                            <h2 class="font-marker text-2xl text-yellow-400 uppercase">Ravioles Caseros</h2>
-                            <span class="text-xl font-bold font-mono text-white">$6.500</span>
-                        </div>
-                        <button class="btn-action mt-3">Añadir al pedido</button>
+                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=800" class="w-full h-44 object-cover">
+                    <div class="p-4 bg-zinc-900/50 text-center">
+                        <h2 class="font-marker text-2xl text-yellow-400 uppercase">Ravioles Caseros</h2>
+                        <p class="text-white font-bold font-mono text-xl mt-1">$6.500</p>
+                        <button class="w-full bg-[#facc15] text-black font-black py-2 rounded-lg mt-3 text-xs uppercase">Añadir al pedido</button>
                     </div>
                 </div>
             </div>
-            <div v-else class="h-full flex flex-col justify-center items-center">
-                <p class="text-zinc-600 font-marker text-xl uppercase opacity-30 italic">Cargando Especialidades...</p>
-            </div>
         </div>
 
-        <footer class="flex flex-col justify-end gap-2 pb-2 h-[22%] mt-2">
-            <div class="grid grid-cols-2 gap-2">
-                <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black scale-105 shadow-[0_0_15px_rgba(250,204,21,0.5)]' : 'bg-white text-black'" class="btn-sucursal">
-                    <p class="font-black uppercase">SARMIENTO</p>
-                    <p class="font-bold">40-4950</p>
+        <footer class="flex items-end pb-4 h-[25%]">
+            <div class="footer-controls">
+                <div class="flex gap-2">
+                    <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black' : 'bg-white text-black'" class="btn-sucursal">
+                        <p>SARMIENTO</p>
+                        <p class="text-[8px] opacity-60">40-4950</p>
+                    </div>
+                    <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black' : 'bg-white text-black'" class="btn-sucursal">
+                        <p>CABO 1°</p>
+                        <p class="text-[8px] opacity-60">40-4952</p>
+                    </div>
                 </div>
-                <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black scale-105 shadow-[0_0_15px_rgba(250,204,21,0.5)]' : 'bg-white text-black'" class="btn-sucursal">
-                    <p class="font-black uppercase">CABO PRIMERO</p>
-                    <p class="font-bold">40-4952</p>
-                </div>
+                <button class="w-full bg-zinc-800 text-zinc-500 py-3 rounded-xl font-black uppercase text-[9px] border border-zinc-700">
+                    CONSTRUYENDO NEXO...
+                </button>
             </div>
-            <button class="w-full bg-zinc-900/80 text-zinc-600 py-3 rounded-xl font-black uppercase text-[9px] border border-zinc-800">
-                PROCESADOR DE PEDIDOS OFFLINE
-            </button>
-        </footer>
+            </footer>
     </div>
 
     <script>
@@ -149,8 +140,7 @@
             },
             mounted() {
                 setTimeout(() => {
-                    const ad = document.getElementById('nexo-static-ad');
-                    ad.style.display = 'block';
+                    document.getElementById('nexo-static-ad').style.display = 'block';
                 }, 2000);
             }
         }).mount('#app')
