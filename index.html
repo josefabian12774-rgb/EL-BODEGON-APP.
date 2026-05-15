@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EL BODEGÓN | RÍO GRANDE</title>
+    <title>EL BODEGÓN | NEXO ARQUETIPO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Permanent+Marker&display=swap" rel="stylesheet">
@@ -21,14 +21,23 @@
         }
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.03); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.03); }
-            70% { transform: scale(1); }
+        /* NexoStaticAd: Módulo Publicitario Obligatorio */
+        #nexo-static-ad {
+            position: fixed;
+            bottom: 85px; /* Por encima de las sucursales */
+            left: 15px;
+            width: 120px;
+            aspect-ratio: 9/16;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(250, 204, 21, 0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 100;
+            display: none; /* Se activa por JS */
+            transition: all 0.5s ease;
         }
-        .pulse-yellow { animation: heartBeat 1.5s infinite ease-in-out; }
+        @media (max-width: 480px) { #nexo-static-ad { width: 15vw; } }
 
         .btn-action { 
             background: #facc15; color: #000; font-weight: 900; 
@@ -36,18 +45,10 @@
             border-radius: 12px; width: 100%; text-align: center;
             box-shadow: 0 4px 0px #b48a04;
         }
-        .btn-action:active { transform: translateY(2px); box-shadow: 0 2px 0px #b48a04; }
 
-        .img-especialidad { height: 110px; width: 110px; border-radius: 16px; border: 2px solid #333; object-fit: cover; }
-        .img-grid { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; border: 1px solid #333; }
-        
-        .card-pizarra {
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 20px;
-            overflow: hidden;
-            width: 100%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+        .card-menu {
+            background: #1a1a1a; border: 2px solid #333; border-radius: 20px;
+            overflow: hidden; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.7);
         }
 
         [v-cloak] { display: none; }
@@ -56,9 +57,16 @@
 <body class="bg-bodegon">
     <div id="app" v-cloak class="flex flex-col h-full p-4 pt-2">
         
+        <div id="nexo-static-ad" @click="toggleAudio">
+            <video id="adVideo" loop muted playsinline autoplay style="width: 100%; height: 100%; object-fit: cover;">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-futuristic-city-4416-large.mp4" type="video/mp4">
+            </video>
+            <div class="absolute bottom-1 right-1 text-[6px] bg-black/50 px-1 rounded text-yellow-500 uppercase font-black">Nexo Ad</div>
+        </div>
+
         <header class="flex justify-between items-center h-[12%]">
             <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-11 h-11 rounded-xl flex items-center justify-center text-xl shadow-lg pulse-yellow">📅</div>
+                <div class="bg-zinc-900 border border-zinc-800 w-11 h-11 rounded-xl flex items-center justify-center text-xl">📅</div>
                 <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Menú<br>Diario</span>
             </div>
             <div class="text-center">
@@ -66,102 +74,49 @@
                 <p class="text-[8px] tracking-[0.4em] text-zinc-600 font-bold uppercase mt-1">Río Grande</p>
             </div>
             <div class="flex flex-col items-center">
-                <div class="bg-zinc-900 border border-zinc-800 w-11 h-11 rounded-xl flex items-center justify-center relative shadow-lg text-yellow-500">
+                <div class="bg-zinc-900 border border-zinc-800 w-11 h-11 rounded-xl flex items-center justify-center relative text-yellow-500">
                     <span class="text-xl">🛒</span>
-                    <span class="absolute -top-1 -right-1 bg-white text-black text-[10px] font-black px-1.5 rounded-full border border-black">{{ pedido.length }}</span>
+                    <span class="absolute -top-1 -right-1 bg-white text-black text-[10px] font-black px-1.5 rounded-full">{{ pedido.length }}</span>
                 </div>
-                <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Carrito<br>{{ pedido.length }} items</span>
+                <span class="text-[8px] uppercase font-bold mt-1 text-zinc-500 text-center leading-none">Carrito</span>
             </div>
         </header>
 
         <nav class="flex justify-between border-b border-zinc-800 text-[10px] font-bold uppercase text-zinc-500 mt-2 h-[5%]">
-            <button v-for="t in tabs" @click="tabActiva = t" 
-                :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" 
-                class="pb-1 px-1 transition-all">
-                {{ t }}
-            </button>
+            <button v-for="t in tabs" @click="tabActiva = t" :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" class="pb-1 px-1">{{ t }}</button>
         </nav>
 
         <div class="flex-1 overflow-hidden mt-3">
-            
             <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="h-full flex flex-col items-center justify-start pt-2">
-                <div class="card-pizarra">
-                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=800" class="w-full h-48 object-cover border-b-2 border-zinc-800" alt="Ravioles">
+                <div class="card-menu">
+                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=800" class="w-full h-48 object-cover border-b-2 border-zinc-800">
                     <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h2 class="font-marker text-3xl text-yellow-400 uppercase leading-none">Ravioles Caseros</h2>
-                                <p class="text-zinc-400 italic text-[11px] mt-1">"Con tuco de bodegón y lluvia de queso"</p>
-                            </div>
+                        <div class="flex justify-between items-center">
+                            <h2 class="font-marker text-3xl text-yellow-400 uppercase leading-none">Ravioles Caseros</h2>
                             <span class="text-2xl font-bold font-mono">$6.500</span>
                         </div>
-                        <button @click="agregar({nombre:'Menú Ravioles', precio: 6500})" class="btn-action mt-4">¡Agregar al Carrito!</button>
+                        <button @click="agregar({nombre:'Menú Ravioles', precio: 6500})" class="btn-action mt-4">Añadir al pedido</button>
                     </div>
-                </div>
-                <p class="font-marker text-xl text-zinc-600 italic uppercase mt-8 text-center">"Como lo hacía la abuela"</p>
-            </div>
-
-            <div v-if="tabActiva === 'ESPECIALIDADES'" class="h-full flex flex-col">
-                <main class="flex flex-col justify-around py-2 h-[65%]">
-                    <div v-for="p in destacados" :key="p.id" class="flex items-center gap-4">
-                        <img :src="p.img" class="img-especialidad shadow-xl">
-                        <div class="flex-1">
-                            <h2 class="text-2xl italic text-yellow-400 uppercase leading-none">{{ p.nombre }}</h2>
-                            <p class="text-[10px] text-zinc-400 italic leading-tight mb-2">{{ p.desc }}</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-2xl font-bold font-mono">$ {{ p.precio }}</span>
-                                <button @click="agregar(p)" class="btn-action max-w-[90px]">Agregar</button>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-                <section class="grid grid-cols-4 gap-2 border-t border-zinc-800 pt-3 h-[35%]">
-                    <div v-for="p in mini" :key="p.id" class="flex flex-col">
-                        <img :src="p.img" class="img-grid mb-1">
-                        <p class="text-[7px] font-black uppercase text-center text-zinc-300 leading-none h-4 overflow-hidden mb-1">{{ p.nombre }}</p>
-                        <button @click="agregar(p)" class="btn-action text-[8px] py-1">Añadir</button>
-                    </div>
-                </section>
-            </div>
-
-            <div v-if="tabActiva === 'PROMOCIONES'" class="h-full flex flex-col justify-center items-center text-center p-4">
-                <div class="bg-zinc-900/80 p-8 rounded-3xl border-2 border-dashed border-yellow-400 shadow-2xl">
-                    <h2 class="font-marker text-4xl text-yellow-400 mb-2 uppercase">¡Combos Locos!</h2>
-                    <p class="text-sm text-zinc-400 uppercase tracking-widest italic">Cocinando ofertas...</p>
                 </div>
             </div>
 
-            <div v-if="tabActiva === 'CONTACTO'" class="h-full flex flex-col justify-center gap-4 p-4 text-center">
-                <div class="bg-zinc-900/90 p-6 rounded-2xl border border-zinc-800 shadow-lg">
-                    <p class="text-yellow-400 font-bold uppercase text-xs mb-4">Nuestras Redes</p>
-                    <div class="flex justify-center gap-10 text-4xl">
-                        <span>📸</span><span>📘</span><span>💬</span>
-                    </div>
-                    <p class="mt-4 text-zinc-500 text-[10px] tracking-widest font-black uppercase">@ELBODEGON.RG</p>
-                </div>
+            <div v-if="tabActiva === 'ESPECIALIDADES'" class="h-full flex flex-col justify-center items-center">
+                <p class="text-zinc-500 font-marker text-2xl uppercase">Próximamente</p>
             </div>
         </div>
 
-        <footer class="flex flex-col justify-end gap-3 pb-2 h-[28%] mt-2">
+        <footer class="flex flex-col justify-end gap-3 pb-2 h-[25%] mt-2">
             <div class="grid grid-cols-2 gap-2">
-                <div @click="sucursalSel = 'SARMIENTO'" 
-                    :class="sucursalSel === 'SARMIENTO' ? 'bg-yellow-400 text-black pulse-yellow scale-105' : 'bg-white text-black'"
-                    class="rounded-2xl p-2 shadow-lg text-center transition-all duration-300 cursor-pointer">
-                    <p class="text-[10px] font-black uppercase leading-none">SARMIENTO</p>
-                    <p class="text-[8px] font-bold opacity-70">Sarmiento 2307</p>
-                    <p class="text-[10px] font-black mt-0.5">📞 40-4950</p>
+                <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black border-2 border-white scale-105' : 'bg-white text-black'" class="rounded-2xl p-2 text-center transition-all">
+                    <p class="text-[10px] font-black uppercase">SARMIENTO</p>
+                    <p class="text-[10px] font-black">📞 40-4950</p>
                 </div>
-                <div @click="sucursalSel = 'CABO'" 
-                    :class="sucursalSel === 'CABO' ? 'bg-yellow-400 text-black pulse-yellow scale-105' : 'bg-white text-black'"
-                    class="rounded-2xl p-2 shadow-lg text-center transition-all duration-300 cursor-pointer">
-                    <p class="text-[10px] font-black uppercase leading-none">CABO PRIMERO</p>
-                    <p class="text-[8px] font-bold opacity-70">Gomez 2331</p>
-                    <p class="text-[10px] font-black mt-0.5">📞 40-4952</p>
+                <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black border-2 border-white scale-105' : 'bg-white text-black'" class="rounded-2xl p-2 text-center transition-all">
+                    <p class="text-[10px] font-black uppercase">CABO PRIMERO</p>
+                    <p class="text-[10px] font-black">📞 40-4952</p>
                 </div>
             </div>
-            <button class="w-full bg-white/10 text-white/40 py-4 rounded-2xl font-black uppercase flex items-center justify-center gap-2 text-sm border border-white/5">
-                EN CONSTRUCCIÓN 🏗️🛵
-            </button>
+            <button class="w-full bg-zinc-800 text-zinc-500 py-3 rounded-2xl font-black uppercase text-xs border border-zinc-700">EN CONSTRUCCIÓN 🏗️</button>
         </footer>
     </div>
 
@@ -170,24 +125,24 @@
         createApp({
             data() {
                 return {
-                    tabActiva: 'ESPECIALIDADES',
-                    sucursalSel: null,
+                    tabActiva: 'MENÚ DEL DÍA',
+                    sucSel: null,
                     tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
-                    pedido: [],
-                    destacados: [
-                        { id: 1, nombre: 'MILAGRUESA', desc: 'Milanesa gigante con papas fritas y huevos fritos.', precio: 7200, img: 'https://images.unsplash.com/photo-1594179200424-64448555e7bc?q=80&w=400' },
-                        { id: 2, nombre: 'LOMOSAURIO', desc: 'Lomo tierno, jamón, queso, huevo y fritas.', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=400' }
-                    ],
-                    mini: [
-                        { id: 3, nombre: 'EMPANADAS', img: 'https://images.unsplash.com/photo-1628102476629-f81c107ce83d?q=80&w=200' },
-                        { id: 4, nombre: 'HAMBURGUESA', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=200' },
-                        { id: 5, nombre: 'PAPAS FRITAS', img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?q=80&w=200' },
-                        { id: 6, nombre: 'PIZZAS', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=200' }
-                    ]
+                    pedido: []
                 }
             },
             methods: {
-                agregar(p) { this.pedido.push(p); }
+                agregar(p) { this.pedido.push(p); },
+                toggleAudio(e) {
+                    const v = document.getElementById('adVideo');
+                    v.muted = !v.muted;
+                }
+            },
+            mounted() {
+                // Lógica NexoStaticAd: Carga diferida de 2 segundos
+                setTimeout(() => {
+                    document.getElementById('nexo-static-ad').style.display = 'block';
+                }, 2000);
             }
         }).mount('#app')
     </script>
