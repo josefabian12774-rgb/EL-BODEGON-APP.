@@ -60,7 +60,11 @@
         </div>
 
         <header class="flex justify-between items-center h-[10%]">
-            <div class="w-10"></div> <div class="text-center">
+            <button @click="mostrarSalaControl = true" class="bg-zinc-900 border-2 border-yellow-400 w-12 h-10 rounded-xl flex flex-col items-center justify-center text-white transform active:scale-95 transition-all shadow-[0_0_10px_rgba(250,204,21,0.1)]" title="Sala de Control">
+                <span class="text-[8px] font-black tracking-tighter text-yellow-400 uppercase leading-none">SALA</span>
+                <span class="text-[6px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">CTRL</span>
+            </button>
+            <div class="text-center">
                 <h1 class="font-marker text-2xl italic tracking-tighter uppercase leading-none">{{ config.nombreNegocio }}</h1>
                 <p class="text-[7px] text-zinc-600 font-bold tracking-[0.3em] uppercase">{{ config.ciudad }}</p>
             </div>
@@ -124,24 +128,24 @@
 
             <div v-if="tabActiva === 'ADMIN'" class="bg-zinc-900/90 border-2 border-yellow-500 p-4 rounded-2xl flex flex-col gap-4 font-sans text-xs">
                 <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
-                    <h3 class="font-marker text-lg text-yellow-400">CONFIGURADOR NAVE</h3>
+                    <h3 class="font-marker text-lg text-yellow-400">CONFIGURADOR BASE</h3>
                     <button @click="tabActiva = 'MENÚ DEL DÍA'" class="bg-red-600 text-white px-2 py-1 rounded font-black text-[10px]">CERRAR</button>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label class="font-bold text-zinc-400 uppercase text-[9px]">Nombre de la Nave / Negocio:</label>
+                    <label class="font-bold text-zinc-400 uppercase text-[9px]">Nombre de la Nave:</label>
                     <input v-model="config.nombreNegocio" class="bg-black border border-zinc-700 p-2 rounded text-white">
-                    <label class="font-bold text-zinc-400 uppercase text-[9px]">WhatsApp Sarmiento:</label>
+                    <label class="font-bold text-zinc-400 uppercase text-[9px]">WhatsApp Sede Sarmiento:</label>
                     <input v-model="sucursalesTel['SARMIENTO']" class="bg-black border border-zinc-700 p-2 rounded text-white">
-                    <label class="font-bold text-zinc-400 uppercase text-[9px]">WhatsApp Cabo 1°:</label>
+                    <label class="font-bold text-zinc-400 uppercase text-[9px]">WhatsApp Sede Cabo 1°:</label>
                     <input v-model="sucursalesTel['CABO']" class="bg-black border border-zinc-700 p-2 rounded text-white">
                 </div>
                 <div class="border-t border-zinc-800 pt-3 flex flex-col gap-2">
-                    <h4 class="font-bold text-yellow-500 text-[10px] uppercase">Añadir Nuevo Plato:</h4>
-                    <input v-model="nuevoPlato.nombre" placeholder="Nombre" class="bg-black border border-zinc-700 p-2 rounded text-white">
+                    <h4 class="font-bold text-yellow-500 text-[10px] uppercase">Inyectar Plato Opcional:</h4>
+                    <input v-model="nuevoPlato.nombre" placeholder="Nombre del plato" class="bg-black border border-zinc-700 p-2 rounded text-white">
                     <input v-model.number="nuevoPlato.precio" type="number" placeholder="Precio ($)" class="bg-black border border-zinc-700 p-2 rounded text-white">
                     <button @click="inyectarPlato" class="bg-yellow-500 text-black p-2 rounded font-black uppercase text-[10px]">Inyectar</button>
                 </div>
-                <button @click="guardarConfig" class="bg-green-600 text-white p-3 rounded-xl font-black uppercase text-[10px]">💾 Guardar</button>
+                <button @click="guardarConfig" class="bg-green-600 text-white p-3 rounded-xl font-black uppercase text-[10px]">💾 Guardar Parámetros</button>
             </div>
         </div>
 
@@ -221,7 +225,7 @@
                 </div>
 
                 <div class="text-center mt-6">
-                    <button @click="tabActiva = 'ADMIN'; mostrarSalaControl = false" class="text-zinc-600 text-[9px] uppercase tracking-wider font-bold underline">Abrir Editor de Platos Base</button>
+                    <button @click="tabActiva = 'ADMIN'; mostrarSalaControl = false" class="text-zinc-600 text-[9px] uppercase tracking-wider font-bold underline">Abrir Editor Parámetros Base</button>
                 </div>
             </div>
         </div>
@@ -232,16 +236,10 @@
                     <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black border-white' : 'bg-zinc-900/90 text-white border-transparent'" class="btn-sucursal border-2 shadow-md">
                         <p>SARMIENTO</p>
                     </div>
-                    
-                    <div @click="mostrarSalaControl = true" class="bg-zinc-900 border-2 border-yellow-400 w-10 h-10 rounded-xl flex items-center justify-center text-base cursor-pointer transform active:scale-90 transition-transform shadow-[0_0_15px_rgba(250,204,21,0.2)]" title="Control Central Nave">
-                        📅
-                    </div>
-                    
                     <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black border-white' : 'bg-zinc-900/90 text-white border-transparent'" class="btn-sucursal border-2 shadow-md">
                         <p>CABO 1°</p>
                     </div>
                 </div>
-                
                 <button @click="abrirVisorComanda" :disabled="pedido.length === 0"
                     :class="pedido.length > 0 ? 'bg-yellow-400 text-black shadow-[0_0_15px_rgba(250,204,21,0.4)]' : 'bg-zinc-900 border-zinc-800 text-zinc-600'"
                     class="w-full border py-3.5 rounded-2xl font-black uppercase text-[9px] tracking-widest transition-all">
@@ -262,7 +260,7 @@
                     pedido: [],
                     nuevoPlato: { nombre: '', precio: null, img: '' },
                     mostrarModalComanda: false,
-                    mostrarSalaControl: false, // Variable de control para el despliegue del Hub Central
+                    mostrarSalaControl: false,
                     
                     config: JSON.parse(localStorage.getItem('bodegon_config')) || {
                         nombreNegocio: 'NEXO NAVE',
@@ -308,17 +306,10 @@
                         this.mostrarModalComanda = false;
                     }
                 },
-                vaciarCarrito() { this.abrirVisorComanda(); },
                 toggleAudio() { document.getElementById('adVideo').muted = !document.getElementById('adVideo').muted; },
-                activarPanelAdmin() { this.mostrarSalaControl = true; },
                 seleccionarModo(modo) {
-                    alert(`Sala de Control: Inicializando parámetros para [Modo ${modo}]. Estructura lista para asignación funcional.`);
+                    alert(`Sala de Control: Mutando parámetros del Arquetipo hacia [Modo ${modo}].`);
                     this.mostrarSalaControl = false;
-                },
-                obtenerTextoBoton() {
-                    if (!this.sucSel) return 'SELECCIONE SUCURSAL';
-                    if (this.pedido.length === 0) return 'AÑADA ELEMENTOS';
-                    return `REVISAR Y CONVALIDAR ($${this.calcularTotalPedido})`;
                 },
                 obtenerPrecioUnitario(nombre) {
                     if (nombre === this.config.menuDiaNombre) return this.config.menuDiaPrecio;
@@ -333,34 +324,21 @@
                 },
                 reducirItem(nombre) {
                     let idx = this.pedido.findIndex(it => it.nombre === nombre);
-                    if (idx !== -1) {
-                        this.pedido.splice(idx, 1);
-                    }
+                    if (idx !== -1) this.pedido.splice(idx, 1);
                 },
                 inyectarPlato() {
-                    if (!this.nuevoPlato.nombre || !this.nuevoPlato.precio) {
-                        alert('Por favor completa nombre y precio.');
-                        return;
-                    }
-                    if (!this.nuevoPlato.img) {
-                        this.nuevoPlato.img = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=140&h=140&fit=crop';
-                    }
+                    if (!this.nuevoPlato.nombre || !this.nuevoPlato.precio) return alert('Completar campos requeridos.');
+                    if (!this.nuevoPlato.img) this.nuevoPlato.img = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=140&h=140&fit=crop';
                     this.platos.push({ ...this.nuevoPlato });
                     this.nuevoPlato = { nombre: '', precio: null, img: '' };
-                    alert('Plato inyectado con éxito.');
+                    alert('Plato inyectado.');
                 },
                 guardarConfig() {
                     localStorage.setItem('bodegon_config', JSON.stringify(this.config));
                     localStorage.setItem('bodegon_tels', JSON.stringify(this.sucursalesTel));
                     localStorage.setItem('bodegon_platos', JSON.stringify(this.platos));
-                    alert('¡Configuración guardada!');
+                    alert('¡Estructura guardada!');
                     this.tabActiva = 'MENÚ DEL DÍA';
-                },
-                restablecerSistema() {
-                    if (confirm('¿Restablecer valores originales?')) {
-                        localStorage.clear();
-                        window.location.reload();
-                    }
                 },
                 dispararComanda() {
                     if (this.pedido.length === 0 || !this.sucSel) return;
