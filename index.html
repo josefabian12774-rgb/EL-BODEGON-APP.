@@ -21,10 +21,10 @@
         }
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
-        /* NEXOSTATICAD: Módulo de video en carril derecho */
+        /* NEXOSTATICAD: Módulo de video perpetuo en carril derecho */
         #nexo-static-ad {
             position: fixed;
-            bottom: 20px; 
+            bottom: 22px; 
             right: 12px; 
             width: 26vw;
             max-width: 95px;
@@ -32,21 +32,21 @@
             background: #000;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid rgba(250, 204, 21, 0.4);
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            border: 2px solid #facc15;
+            box-shadow: 0 0 25px rgba(250, 204, 21, 0.2);
             z-index: 100;
-            display: none;
         }
 
         .footer-controls { width: 68%; display: flex; flex-direction: column; gap: 8px; }
 
         .btn-sucursal {
-            border-radius: 12px; padding: 12px 4px; text-align: center;
+            border-radius: 12px; padding: 10px 4px; text-align: center;
             transition: all 0.3s ease; cursor: pointer; flex: 1; border: 2px solid transparent;
         }
         .btn-sucursal p { font-size: 9px; font-weight: 900; text-transform: uppercase; line-height: 1; }
 
-        .img-especialidad { height: 85px; width: 85px; border-radius: 14px; object-fit: cover; border: 1px solid #333; }
+        /* Ajuste de Alta Densidad para no empujar la botonera */
+        .img-especialidad { height: 70px; width: 70px; border-radius: 12px; object-fit: cover; border: 1px solid #333; }
         
         [v-cloak] { display: none; }
     </style>
@@ -67,16 +67,16 @@
                 <h1 class="font-marker text-2xl italic tracking-tighter uppercase leading-none">EL BODEGÓN</h1>
                 <p class="text-[7px] text-zinc-600 font-bold tracking-[0.3em] uppercase">Río Grande</p>
             </div>
-            <div class="bg-zinc-900/50 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center relative text-yellow-500">
-                🛒 <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-black px-1 rounded-full">{{ pedido.length }}</span>
+            <div @click="vaciarCarrito" class="bg-zinc-900/50 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center relative text-yellow-500 cursor-pointer" title="Vaciar Comanda">
+                🛒 <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none">{{ pedido.length }}</span>
             </div>
         </header>
 
         <nav class="flex justify-between border-b border-zinc-800 text-[10px] font-bold uppercase text-zinc-500 mt-2 h-[5%]">
-            <button v-for="t in tabs" @click="tabActiva = t" :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" class="pb-1 px-1">{{ t }}</button>
+            <button v-for="t in tabs" :key="t" @click="tabActiva = t" :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" class="pb-1 px-1 tracking-tight">{{ t }}</button>
         </nav>
 
-        <div class="flex-1 overflow-y-auto mt-4 pr-1">
+        <div class="flex-1 overflow-y-auto mt-4 pr-1 pb-4">
             
             <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="flex flex-col items-center">
                 <div class="bg-zinc-900/40 border border-zinc-800 rounded-[2rem] overflow-hidden w-full shadow-2xl">
@@ -84,30 +84,44 @@
                     <div class="p-5 text-center">
                         <h2 class="font-marker text-3xl text-yellow-400 uppercase leading-none">Ravioles Caseros</h2>
                         <p class="text-white font-bold font-mono text-2xl mt-2">$6.500</p>
-                        <button @click="agregar({nombre:'Ravioles', precio:6500})" class="w-full bg-yellow-400 text-black font-black py-3 rounded-2xl mt-4 text-[10px] uppercase shadow-lg">Añadir</button>
+                        <button @click="agregar({nombre:'Ravioles Caseros', precio:6500})" class="w-full bg-yellow-400 text-black font-black py-3 rounded-2xl mt-4 text-[10px] uppercase shadow-lg">Añadir</button>
                     </div>
                 </div>
             </div>
 
-            <div v-if="tabActiva === 'ESPECIALIDADES'" class="flex flex-col gap-3">
-                <div v-for="p in platos" class="flex gap-4 items-center bg-zinc-900/30 border border-zinc-800/50 p-3 rounded-2xl">
+            <div v-if="tabActiva === 'PROMOCIONES'" class="flex flex-col gap-3">
+                <div v-for="prom in promos" :key="prom.nombre" class="bg-gradient-to-r from-amber-950/40 to-zinc-900/60 border-2 border-dashed border-yellow-500/40 p-4 rounded-2xl relative overflow-hidden">
+                    <span class="absolute top-0 right-0 bg-yellow-500 text-black font-black text-[7px] px-2 py-0.5 uppercase tracking-widest rounded-bl-lg">¡IMPERDIBLE!</span>
+                    <h3 class="text-xl font-marker tracking-tight text-white leading-none uppercase">{{ prom.nombre }}</h3>
+                    <p class="text-[10px] text-zinc-400 font-sans mt-1 lowercase first-letter:uppercase">{{ prom.desc }}</p>
+                    <div class="flex justify-between items-center mt-3">
+                        <span class="font-mono font-bold text-yellow-400 text-lg">$ {{ prom.precio }}</span>
+                        <button @click="agregar(prom)" class="bg-yellow-500 text-black px-4 py-1.5 rounded-xl text-[9px] font-black uppercase shadow-md">LLEVAR PROMO</button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="tabActiva === 'ESPECIALIDADES'" class="flex flex-col gap-2">
+                <div v-for="p in platos" :key="p.nombre" class="flex gap-3 items-center bg-zinc-900/30 border border-zinc-800/50 p-2 rounded-xl">
                     <img :src="p.img" class="img-especialidad shadow-lg">
                     <div class="flex-1">
-                        <h3 class="text-lg leading-none uppercase font-bold text-yellow-500">{{ p.nombre }}</h3>
+                        <h3 class="text-sm leading-none uppercase font-bold text-yellow-500 tracking-wide">{{ p.nombre }}</h3>
                         <div class="flex justify-between items-center mt-2">
-                            <span class="font-mono font-bold text-white">$ {{ p.precio }}</span>
-                            <button @click="agregar(p)" class="bg-white text-black px-4 py-1.5 rounded-lg text-[9px] font-black uppercase">Añadir</button>
+                            <span class="font-mono font-bold text-white text-xs">$ {{ p.precio }}</span>
+                            <button @click="agregar(p)" class="bg-white text-black px-3 py-1 rounded-lg text-[8px] font-black uppercase">Añadir</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div v-if="tabActiva === 'CONTACTO'" class="flex flex-col items-center justify-center h-full text-center">
-                <div class="bg-zinc-900/60 border border-zinc-800 p-8 rounded-[2.5rem] w-full">
-                    <div class="flex justify-center gap-10 text-4xl mb-4">
-                        <span>📸</span><span>📘</span><span>💬</span>
+            <div v-if="tabActiva === 'CONTACTO'" class="flex flex-col items-center justify-center text-center mt-4">
+                <div class="bg-zinc-900/60 border border-zinc-800 p-6 rounded-[2rem] w-full">
+                    <div class="flex justify-center gap-8 text-3xl mb-4">
+                        <a href="#" class="hover:scale-110 transition-transform">📸</a>
+                        <a href="#" class="hover:scale-110 transition-transform">📘</a>
+                        <a href="#" class="hover:scale-110 transition-transform">💬</a>
                     </div>
-                    <p class="text-[8px] text-zinc-600 uppercase tracking-[0.4em] font-black">Rio Grande · TDF</p>
+                    <p class="text-[8px] text-zinc-500 uppercase tracking-[0.4em] font-black">Rio Grande · TDF</p>
                 </div>
             </div>
         </div>
@@ -115,15 +129,17 @@
         <footer class="flex items-end pb-4 h-[22%]">
             <div class="footer-controls">
                 <div class="flex gap-2">
-                    <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black border-white' : 'bg-white text-black border-transparent'" class="btn-sucursal border-2 shadow-md">
+                    <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black border-white' : 'bg-zinc-900/90 text-white border-transparent'" class="btn-sucursal border-2 shadow-md">
                         <p>SARMIENTO</p>
                     </div>
-                    <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black border-white' : 'bg-white text-black border-transparent'" class="btn-sucursal border-2 shadow-md">
+                    <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black border-white' : 'bg-zinc-900/90 text-white border-transparent'" class="btn-sucursal border-2 shadow-md">
                         <p>CABO 1°</p>
                     </div>
                 </div>
-                <button class="w-full bg-zinc-900 border border-zinc-800 text-zinc-600 py-3.5 rounded-2xl font-black uppercase text-[9px] tracking-widest">
-                    {{ sucSel ? 'PEDIR EN ' + sucSel : 'SELECCIONAR SUCURSAL' }}
+                <button @click="dispararComanda" :disabled="pedido.length === 0 || !sucSel"
+                    :class="pedido.length > 0 && sucSel ? 'bg-yellow-400 text-black shadow-[0_0_15px_rgba(250,204,21,0.4)]' : 'bg-zinc-900 border-zinc-800 text-zinc-600'"
+                    class="w-full border py-3.5 rounded-2xl font-black uppercase text-[9px] tracking-widest transition-all">
+                    {{ obtenerTextoBoton() }}
                 </button>
             </div>
         </footer>
@@ -136,8 +152,16 @@
                 return {
                     tabActiva: 'MENÚ DEL DÍA',
                     sucSel: null,
-                    tabs: ['MENÚ DEL DÍA', 'ESPECIALIDADES', 'CONTACTO'],
+                    tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
                     pedido: [],
+                    sucursalesTel: {
+                        'SARMIENTO': '5492964404950',
+                        'CABO': '5492964404952'
+                    },
+                    promos: [
+                        { nombre: 'COMBO AMIGOS 🤝', precio: 12500, desc: '2 milagruses medianas + porción doble de papas fritas.' },
+                        { nombre: 'PROMO LOMO 🦖🥤', precio: 9800, desc: '1 lomosaurio rey + bebida de 500ml de regalo.' }
+                    ],
                     platos: [
                         { nombre: 'MILAGRUESA', precio: 7200, img: 'https://images.unsplash.com/photo-1594179200424-64448555e7bc?q=80&w=200' },
                         { nombre: 'LOMOSAURIO', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=200' },
@@ -147,10 +171,29 @@
             },
             methods: {
                 agregar(p) { this.pedido.push(p); },
-                toggleAudio() { document.getElementById('adVideo').muted = !document.getElementById('adVideo').muted; }
-            },
-            mounted() {
-                setTimeout(() => { document.getElementById('nexo-static-ad').style.display = 'block'; }, 2000);
+                vaciarCarrito() { if(confirm("¿Desea vaciar la comanda actual?")) this.pedido = []; },
+                toggleAudio() { document.getElementById('adVideo').muted = !document.getElementById('adVideo').muted; },
+                obtenerTextoBoton() {
+                    if (!this.sucSel) return 'SELECCIONE SUCURSAL';
+                    if (this.pedido.length === 0) return 'AÑADA ELEMENTOS';
+                    const total = this.pedido.reduce((acc, el) => acc + el.precio, 0);
+                    return `ENVIAR PEDIDO A ${this.sucSel} ($${total})`;
+                },
+                dispararComanda() {
+                    if (this.pedido.length === 0 || !this.sucSel) return;
+                    
+                    let lineas = {};
+                    this.pedido.forEach(it => { lineas[it.nombre] = (lineas[it.nombre] || 0) + 1; });
+                    
+                    let cuerpo = Object.keys(lineas).map(nombre => `🔹 *${lineas[nombre]}x ${nombre}*`).join('\n');
+                    let totalPedido = this.pedido.reduce((acc, el) => acc + el.precio, 0);
+                    
+                    const mensaje = encodeURIComponent(`🥩 *EL BODEGÓN - NUEVA COMANDA MÓVIL*\n\n📍 *Sede de Despacho:* ${this.sucSel === 'CABO' ? 'CABO 1°' : this.sucSel}\n\n${cuerpo}\n\n💰 *Total a Liquidar:* $${totalPedido}`);
+                    const telefono = this.sucursalesTel[this.sucSel];
+                    
+                    window.open(`https://wa.me/${telefono}?text=${mensaje}`);
+                    this.pedido = [];
+                }
             }
         }).mount('#app')
     </script>
