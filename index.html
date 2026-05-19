@@ -6,7 +6,7 @@
     <title>EL BODEGÓN | NEXO ARQUETIPO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght=700&family=Permanent+Marker&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body { 
@@ -21,7 +21,6 @@
         }
         .font-marker { font-family: 'Permanent Marker', cursive; color: #facc15; }
         
-        /* NEXOSTATICAD: Módulo de video perpetuo en carril derecho */
         #nexo-static-ad {
             position: fixed;
             bottom: 22px; 
@@ -45,7 +44,6 @@
         }
         .btn-sucursal p { font-size: 9px; font-weight: 900; text-transform: uppercase; line-height: 1; }
 
-        /* Ajuste de Alta Densidad para no empujar la botonera */
         .img-especialidad { height: 70px; width: 70px; border-radius: 12px; object-fit: cover; border: 1px solid #333; }
         
         [v-cloak] { display: none; }
@@ -62,10 +60,10 @@
         </div>
 
         <header class="flex justify-between items-center h-[10%]">
-            <div class="bg-zinc-900/50 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center text-lg">📅</div>
+            <div @dblclick="activarPanelAdmin" class="bg-zinc-900/50 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center text-lg cursor-pointer select-none" title="Acceso Mozo Fantasma">📅</div>
             <div class="text-center">
-                <h1 class="font-marker text-2xl italic tracking-tighter uppercase leading-none">EL BODEGÓN</h1>
-                <p class="text-[7px] text-zinc-600 font-bold tracking-[0.3em] uppercase">Río Grande</p>
+                <h1 class="font-marker text-2xl italic tracking-tighter uppercase leading-none">{{ config.nombreNegocio }}</h1>
+                <p class="text-[7px] text-zinc-600 font-bold tracking-[0.3em] uppercase">{{ config.ciudad }}</p>
             </div>
             <div @click="vaciarCarrito" class="bg-zinc-900/50 border border-zinc-800 w-10 h-10 rounded-xl flex items-center justify-center relative text-yellow-500 cursor-pointer" title="Vaciar Comanda">
                 🛒 <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none">{{ pedido.length }}</span>
@@ -73,24 +71,24 @@
         </header>
 
         <nav class="flex justify-between border-b border-zinc-800 text-[10px] font-bold uppercase text-zinc-500 mt-2 h-[5%]">
-            <button v-for="t in tabs" :key="t" @click="tabActiva = t" :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" class="pb-1 px-1 tracking-tight">{{ t }}</button>
+            <button v-for="t in filtradoTabs" :key="t" @click="tabActiva = t" :class="{'text-yellow-400 border-b-2 border-yellow-400': tabActiva === t}" class="pb-1 px-1 tracking-tight">{{ t }}</button>
         </nav>
 
         <div class="flex-1 overflow-y-auto mt-4 pr-1 pb-4">
             
             <div v-if="tabActiva === 'MENÚ DEL DÍA'" class="flex flex-col items-center">
                 <div class="bg-zinc-900/40 border border-zinc-800 rounded-[2rem] overflow-hidden w-full shadow-2xl">
-                    <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=600" class="w-full h-44 object-cover">
+                    <img :src="config.menuDiaImg" class="w-full h-44 object-cover">
                     <div class="p-5 text-center">
-                        <h2 class="font-marker text-3xl text-yellow-400 uppercase leading-none">Ravioles Caseros</h2>
-                        <p class="text-white font-bold font-mono text-2xl mt-2">$6.500</p>
-                        <button @click="agregar({nombre:'Ravioles Caseros', precio:6500})" class="w-full bg-yellow-400 text-black font-black py-3 rounded-2xl mt-4 text-[10px] uppercase shadow-lg">Añadir</button>
+                        <h2 class="font-marker text-3xl text-yellow-400 uppercase leading-none">{{ config.menuDiaNombre }}</h2>
+                        <p class="text-white font-bold font-mono text-2xl mt-2">$ {{ config.menuDiaPrecio }}</p>
+                        <button @click="agregar({nombre: config.menuDiaNombre, precio: config.menuDiaPrecio})" class="w-full bg-yellow-400 text-black font-black py-3 rounded-2xl mt-4 text-[10px] uppercase shadow-lg">Añadir al Carrito</button>
                     </div>
                 </div>
             </div>
 
             <div v-if="tabActiva === 'PROMOCIONES'" class="flex flex-col gap-3">
-                <div v-for="prom in promos" :key="prom.nombre" class="bg-gradient-to-r from-amber-950/40 to-zinc-900/60 border-2 border-dashed border-yellow-500/40 p-4 rounded-2xl relative overflow-hidden">
+                <div v-for="prom in promos" :key="prom.nombre" class="bg-gradient-to-r from-amber-950/40 to-zinc-900/60 border-2 border-dashed border-yellow-500 p-4 rounded-2xl relative overflow-hidden">
                     <span class="absolute top-0 right-0 bg-yellow-500 text-black font-black text-[7px] px-2 py-0.5 uppercase tracking-widest rounded-bl-lg">¡IMPERDIBLE!</span>
                     <h3 class="text-xl font-marker tracking-tight text-white leading-none uppercase">{{ prom.nombre }}</h3>
                     <p class="text-[10px] text-zinc-400 font-sans mt-1 lowercase first-letter:uppercase">{{ prom.desc }}</p>
@@ -103,7 +101,7 @@
 
             <div v-if="tabActiva === 'ESPECIALIDADES'" class="flex flex-col gap-2">
                 <div v-for="p in platos" :key="p.nombre" class="flex gap-3 items-center bg-zinc-900/30 border border-zinc-800/50 p-2 rounded-xl">
-                    <img :src="p.img" class="img-especialidad shadow-lg">
+                    <img :src="p.img" class="img-especialidad shadow-lg" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=140&h=140&fit=crop'">
                     <div class="flex-1">
                         <h3 class="text-sm leading-none uppercase font-bold text-yellow-500 tracking-wide">{{ p.nombre }}</h3>
                         <div class="flex justify-between items-center mt-2">
@@ -121,12 +119,41 @@
                         <a href="#" class="hover:scale-110 transition-transform">📘</a>
                         <a href="#" class="hover:scale-110 transition-transform">💬</a>
                     </div>
-                    <p class="text-[8px] text-zinc-500 uppercase tracking-[0.4em] font-black">Rio Grande · TDF</p>
+                    <p class="text-[8px] text-zinc-500 uppercase tracking-[0.4em] font-black">{{ config.ciudad }} · TDF</p>
                 </div>
+            </div>
+
+            <div v-if="tabActiva === 'ADMIN'" class="bg-zinc-900/90 border-2 border-yellow-500 p-4 rounded-2xl flex flex-col gap-4 font-sans text-xs">
+                <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                    <h3 class="font-marker text-lg text-yellow-400">MOZO FANTASMA V1.3</h3>
+                    <button @click="tabActiva = 'MENÚ DEL DÍA'" class="bg-red-600 text-white px-2 py-1 rounded font-black text-[10px]">CERRAR</button>
+                </div>
+                
+                <div class="flex flex-col gap-2">
+                    <label class="font-bold text-zinc-400 uppercase text-[9px]">Nombre del Negocio:</label>
+                    <input v-model="config.nombreNegocio" class="bg-black border border-zinc-700 p-2 rounded text-white">
+                    
+                    <label class="font-bold text-zinc-400 uppercase text-[9px]">WhatsApp Sarmiento:</label>
+                    <input v-model="sucursalesTel['SARMIENTO']" class="bg-black border border-zinc-700 p-2 rounded text-white" placeholder="Ej: 5492964XXXXXX">
+                    
+                    <label class="font-bold text-zinc-400 uppercase text-[9px]">WhatsApp Cabo 1°:</label>
+                    <input v-model="sucursalesTel['CABO']" class="bg-black border border-zinc-700 p-2 rounded text-white" placeholder="Ej: 5492964XXXXXX">
+                </div>
+
+                <div class="border-t border-zinc-800 pt-3 flex flex-col gap-2">
+                    <h4 class="font-bold text-yellow-500 text-[10px] uppercase">Añadir Nuevo Plato a Especialidades:</h4>
+                    <input v-model="nuevoPlato.nombre" placeholder="Nombre del plato" class="bg-black border border-zinc-700 p-2 rounded text-white">
+                    <input v-model.number="nuevoPlato.precio" type="number" placeholder="Precio ($)" class="bg-black border border-zinc-700 p-2 rounded text-white">
+                    <input v-model="nuevoPlato.img" placeholder="URL de Imagen (Opcional)" class="bg-black border border-zinc-700 p-2 rounded text-white">
+                    <button @click="inyectarPlato" class="bg-yellow-500 text-black p-2 rounded font-black uppercase text-[10px]">Inyectar Plato</button>
+                </div>
+
+                <button @click="guardarConfig" class="bg-green-600 text-white p-3 rounded-xl font-black uppercase tracking-wider text-[10px] mt-2 shadow-lg">💾 Guardar Configuración</button>
+                <button @click="restablecerSistema" class="text-zinc-600 text-[9px] underline mt-1 text-center">Restablecer valores de fábrica</button>
             </div>
         </div>
 
-        <footer class="flex items-end pb-4 h-[22%]">
+        <footer v-if="tabActiva !== 'ADMIN'" class="flex items-end pb-4 h-[22%]">
             <div class="footer-controls">
                 <div class="flex gap-2">
                     <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black border-white' : 'bg-zinc-900/90 text-white border-transparent'" class="btn-sucursal border-2 shadow-md">
@@ -152,9 +179,19 @@
                 return {
                     tabActiva: 'MENÚ DEL DÍA',
                     sucSel: null,
-                    tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO'],
+                    tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO', 'ADMIN'],
                     pedido: [],
-                    sucursalesTel: {
+                    nuevoPlato: { nombre: '', precio: null, img: '' },
+                    
+                    // Almacenamiento mutable ("Mozo Fantasma")
+                    config: JSON.parse(localStorage.getItem('bodegon_config')) || {
+                        nombreNegocio: 'EL BODEGÓN',
+                        ciudad: 'Río Grande',
+                        menuDiaNombre: 'Ravioles Caseros',
+                        menuDiaPrecio: 6500,
+                        menuDiaImg: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&h=350&fit=crop'
+                    },
+                    sucursalesTel: JSON.parse(localStorage.getItem('bodegon_tels')) || {
                         'SARMIENTO': '5492964404950',
                         'CABO': '5492964404952'
                     },
@@ -162,22 +199,56 @@
                         { nombre: 'COMBO AMIGOS 🤝', precio: 12500, desc: '2 milagruses medianas + porción doble de papas fritas.' },
                         { nombre: 'PROMO LOMO 🦖🥤', precio: 9800, desc: '1 lomosaurio rey + bebida de 500ml de regalo.' }
                     ],
-                    platos: [
-                        { nombre: 'MILAGRUESA', precio: 7200, img: 'https://images.unsplash.com/photo-1594179200424-64448555e7bc?q=80&w=200' },
-                        { nombre: 'LOMOSAURIO', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=200' },
-                        { nombre: 'EMPANADAS', precio: 5800, img: 'https://images.unsplash.com/photo-1628102476629-f81c107ce83d?q=80&w=200' }
+                    // URLs Optimizadas nativamente por API Unsplash con pesos mínimos (<20kb por asset)
+                    platos: JSON.parse(localStorage.getItem('bodegon_platos')) || [
+                        { nombre: 'MILAGRUESA', precio: 7200, img: 'https://images.unsplash.com/photo-1594179200424-64448555e7bc?w=140&h=140&fit=crop' },
+                        { nombre: 'LOMOSAURIO', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=140&h=140&fit=crop' },
+                        { nombre: 'EMPANADAS', precio: 5800, img: 'https://images.unsplash.com/photo-1628102476629-f81c107ce83d?w=140&h=140&fit=crop' }
                     ]
+                }
+            },
+            computed: {
+                filtradoTabs() {
+                    // Oculta la pestaña de administración visualmente del menú de navegación común
+                    return this.tabs.filter(t => t !== 'ADMIN');
                 }
             },
             methods: {
                 agregar(p) { this.pedido.push(p); },
                 vaciarCarrito() { if(confirm("¿Desea vaciar la comanda actual?")) this.pedido = []; },
                 toggleAudio() { document.getElementById('adVideo').muted = !document.getElementById('adVideo').muted; },
+                activarPanelAdmin() { this.tabActiva = 'ADMIN'; },
                 obtenerTextoBoton() {
                     if (!this.sucSel) return 'SELECCIONE SUCURSAL';
                     if (this.pedido.length === 0) return 'AÑADA ELEMENTOS';
                     const total = this.pedido.reduce((acc, el) => acc + el.precio, 0);
                     return `ENVIAR PEDIDO A ${this.sucSel} ($${total})`;
+                },
+                inyectarPlato() {
+                    if (!this.nuevoPlato.nombre || !this.nuevoPlato.precio) {
+                        alert('Por favor completa nombre y precio.');
+                        return;
+                    }
+                    // Si no agregan imagen, se inyecta una por defecto optimizada para gastronomía
+                    if (!this.nuevoPlato.img) {
+                        this.nuevoPlato.img = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=140&h=140&fit=crop';
+                    }
+                    this.platos.push({ ...this.nuevoPlato });
+                    this.nuevoPlato = { nombre: '', precio: null, img: '' };
+                    alert('Plato inyectado con éxito en Especialidades.');
+                },
+                guardarConfig() {
+                    localStorage.setItem('bodegon_config', JSON.stringify(this.config));
+                    localStorage.setItem('bodegon_tels', JSON.stringify(this.sucursalesTel));
+                    localStorage.setItem('bodegon_platos', JSON.stringify(this.platos));
+                    alert('¡Estructura guardada! La Nave se ha reconfigurado correctamente.');
+                    this.tabActiva = 'MENÚ DEL DÍA';
+                },
+                restablecerSistema() {
+                    if (confirm('¿Seguro quieres borrar los cambios del cliente y volver de fábrica?')) {
+                        localStorage.clear();
+                        window.location.reload();
+                    }
                 },
                 dispararComanda() {
                     if (this.pedido.length === 0 || !this.sucSel) return;
@@ -188,7 +259,7 @@
                     let cuerpo = Object.keys(lineas).map(nombre => `🔹 *${lineas[nombre]}x ${nombre}*`).join('\n');
                     let totalPedido = this.pedido.reduce((acc, el) => acc + el.precio, 0);
                     
-                    const mensaje = encodeURIComponent(`🥩 *EL BODEGÓN - NUEVA COMANDA MÓVIL*\n\n📍 *Sede de Despacho:* ${this.sucSel === 'CABO' ? 'CABO 1°' : this.sucSel}\n\n${cuerpo}\n\n💰 *Total a Liquidar:* $${totalPedido}`);
+                    const mensaje = encodeURIComponent(`🥩 *${this.config.nombreNegocio} - NUEVA COMANDA*\n\n📍 *Sede:* ${this.sucSel === 'CABO' ? 'CABO 1°' : this.sucSel}\n\n${cuerpo}\n\n💰 *Total:* $${totalPedido}`);
                     const telefono = this.sucursalesTel[this.sucSel];
                     
                     window.open(`https://wa.me/${telefono}?text=${mensaje}`);
