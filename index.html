@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>EL BODEGÓN | NEXO ARQUETIPO</title>
+    <title>NEXO NAVE | ARQUETIPO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght=700&family=Permanent+Marker&display=swap" rel="stylesheet">
@@ -125,12 +125,12 @@
 
             <div v-if="tabActiva === 'ADMIN'" class="bg-zinc-900/90 border-2 border-yellow-500 p-4 rounded-2xl flex flex-col gap-4 font-sans text-xs">
                 <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
-                    <h3 class="font-marker text-lg text-yellow-400">MODO FANTASMA V1.4</h3>
+                    <h3 class="font-marker text-lg text-yellow-400">MODO FANTASMA V1.5</h3>
                     <button @click="tabActiva = 'MENÚ DEL DÍA'" class="bg-red-600 text-white px-2 py-1 rounded font-black text-[10px]">CERRAR</button>
                 </div>
                 
                 <div class="flex flex-col gap-2">
-                    <label class="font-bold text-zinc-400 uppercase text-[9px]">Nombre del Negocio:</label>
+                    <label class="font-bold text-zinc-400 uppercase text-[9px]">Nombre de la Nave / Negocio:</label>
                     <input v-model="config.nombreNegocio" class="bg-black border border-zinc-700 p-2 rounded text-white">
                     
                     <label class="font-bold text-zinc-400 uppercase text-[9px]">WhatsApp Sarmiento:</label>
@@ -153,7 +153,7 @@
             </div>
         </div>
 
-        <div v-if="mostrarModalComanda" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[150] flex flex-col p-6 justify-between animate-fade-in">
+        <div v-if="mostrarModalComanda" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[150] flex flex-col p-6 justify-between">
             <div>
                 <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
                     <h3 class="font-marker text-2xl text-yellow-400 uppercase tracking-tight">Tu Pedido Actual</h3>
@@ -223,18 +223,20 @@
                     tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO', 'ADMIN'],
                     pedido: [],
                     nuevoPlato: { nombre: '', precio: null, img: '' },
-                    mostrarModalComanda: false, // Control de renderizado del modal
+                    mostrarModalComanda: false,
                     
+                    // Inicialización por defecto adaptada a la marca NEXO NAVE
                     config: JSON.parse(localStorage.getItem('bodegon_config')) || {
-                        nombreNegocio: 'EL BODEGÓN',
+                        nombreNegocio: 'NEXO NAVE',
                         ciudad: 'Río Grande',
                         menuDiaNombre: 'Ravioles Caseros',
                         menuDiaPrecio: 6500,
                         menuDiaImg: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&h=350&fit=crop'
                     },
+                    // Mapeo unificado al número nuevo 2964-616053
                     sucursalesTel: JSON.parse(localStorage.getItem('bodegon_tels')) || {
-                        'SARMIENTO': '5492964404950',
-                        'CABO': '5492964404952'
+                        'SARMIENTO': '5492964616053',
+                        'CABO': '5492964616053'
                     },
                     promos: [
                         { nombre: 'COMBO AMIGOS 🤝', precio: 12500, desc: '2 milagruses medianas + porción doble de papas fritas.' },
@@ -251,7 +253,6 @@
                 filtradoTabs() {
                     return this.tabs.filter(t => t !== 'ADMIN');
                 },
-                // Genera la matriz limpia agrupada para renderizar en el modal
                 comandaAgrupada() {
                     let g = {};
                     this.pedido.forEach(it => { g[it.nombre] = (g[it.nombre] || 0) + 1; });
@@ -270,7 +271,7 @@
                         this.mostrarModalComanda = false;
                     }
                 },
-                vaciarCarrito() { this.abrirVisorComanda(); }, // Redirección táctica intuitiva
+                vaciarCarrito() { this.abrirVisorComanda(); },
                 toggleAudio() { document.getElementById('adVideo').muted = !document.getElementById('adVideo').muted; },
                 activarPanelAdmin() { this.tabActiva = 'ADMIN'; },
                 obtenerTextoBoton() {
