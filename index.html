@@ -1,194 +1,69 @@
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>El Bodegón | Central de Pedidos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL BODEGÓN - Menú Digital</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --main-bodegon: #ff6400; 
-            --glow-bodegon: rgba(255, 100, 0, 0.25); 
-            --surface-bodegon: rgba(20, 20, 25, 0.95);
+        :root { --amarillo: #ffcc00; --pizarra: #121212; }
+        body {
+            background-color: var(--pizarra);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            background-image: url('https://www.transparenttextures.com/patterns/black-chalkboard.png');
         }
-        body { 
-            background: #050508; 
-            color: #fff; 
-            font-family: 'Orbitron', sans-serif; 
-            min-height: 100vh; 
-            margin: 0;
-        }
-        
-        .bodegon-text { color: var(--main-bodegon); text-shadow: 0 0 8px var(--glow-bodegon); }
-        .bodegon-border { border-color: var(--main-bodegon) !important; }
-
-        /* INTERFAZ INDUSTRIAL DE ALTA DENSIDAD */
-        .btn-bodegon {
-            background: rgba(0, 0, 0, 0.7); 
-            color: var(--main-bodegon); 
-            border: 1px solid var(--main-bodegon);
-            box-shadow: inset 0 0 8px var(--glow-bodegon);
-            font-weight: 900; 
-            transition: 0.2s;
-            text-transform: uppercase;
-        }
-        .btn-bodegon:active { background: var(--main-bodegon); color: #000; }
-
-        /* MATRIZ DE PLATOS CON ESQUINAS RECORTADAS TYPE-M */
-        .grid-card {
-            background: var(--surface-bodegon);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            transition: 0.3s;
-        }
-        .grid-card:active { border-color: var(--main-bodegon); transform: scale(0.98); }
-
-        /* INPUTS MILITARES AJUSTADOS */
-        .input-bodegon {
-            background: transparent; border: 1px solid var(--main-bodegon); color: #fff;
-            padding: 12px; font-size: 11px; outline: none; text-align: center;
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0% 30%);
-            box-shadow: inset 0 0 10px var(--glow-bodegon); transition: 0.3s;
-        }
-        .input-bodegon:focus { box-shadow: 0 0 15px var(--main-bodegon); }
-
-        .silicio-modal {
-            position: fixed; inset: 0; background: rgba(3, 3, 5, 0.98);
-            backdrop-filter: blur(15px); z-index: 9999; display: flex; align-items: center; justify-content: center;
-            transform: translateY(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .silicio-modal.active { transform: translateY(0); }
-
-        .abastecimiento-overlay { 
-            position: fixed; inset: 0; background: #000; z-index: 50000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            border: 4px solid var(--main-bodegon); margin: 8px; 
-        }
-
-        [v-cloak] { display: none; }
+        .font-titulo { font-family: 'Bebas Neue', cursive; }
+        .header-bodegon { border-bottom: 4px dashed var(--amarillo); text-align: center; }
+        .btn-sucursal { border: 2px solid #333; transition: 0.3s; background: #1a1a1a; }
+        .btn-sucursal.active { border-color: var(--amarillo); background: rgba(255, 204, 0, 0.1); transform: scale(1.05); }
+        .card-plato { background: #1a1a1a; border-radius: 15px; border-left: 5px solid var(--amarillo); overflow: hidden; }
+        .btn-pedir { background-color: var(--amarillo); color: black; font-weight: 900; }
+        .precio-tag { background: var(--amarillo); color: black; padding: 5px 12px; border-radius: 5px; font-weight: 900; }
     </style>
 </head>
-<body class="flex justify-center items-center">
-    <div id="app" v-cloak class="w-full max-w-lg h-screen flex flex-col items-center py-4 px-4 relative overflow-hidden">
+<body>
+    <div id="app" class="max-w-md mx-auto p-4 min-h-screen">
         
-        <div v-if="cicloAgotado" class="abastecimiento-overlay text-center p-6">
-            <h2 class="bodegon-text text-2xl font-black italic mb-3">SERVICIO DETENIDO</h2>
-            <p class="text-white text-[10px] tracking-widest mb-8">REQUERIDA ACTIVACIÓN DE TERMINAL</p>
-            <button @click="almiranteCheck" class="btn-bodegon px-6 py-3 text-[10px]">INJECT MASTER KEY</button>
-        </div>
-
-        <header class="w-full flex justify-between items-center z-50 mb-3 h-16 border-b border-white/5 pb-2">
-            <div class="flex flex-col gap-1">
-                <button @click="panelControl = true" class="text-[8px] bodegon-border border px-2 py-1.5 bg-black/40 font-black uppercase bodegon-text">SALA DE CONTROL</button>
-                <span class="text-[5px] text-zinc-500 font-black tracking-wider pl-1">{{ sessionActiva ? 'MATRIZ CONSOLIDADA' : 'MODO CONTROL LOCAL' }}</span>
-            </div>
-
-            <div class="flex-1 flex justify-center px-2">
-                <img v-if="configNave.logo" :src="configNave.logo" class="max-h-12 filter drop-shadow-[0_0_8px_var(--glow-bodegon)]">
-                <h1 v-else class="text-lg font-black tracking-widest italic bodegon-text">EL BODEGÓN</h1>
-            </div>
-
-            <div @click="almiranteCheck" class="bodegon-border bg-black/60 border p-1 rounded text-center min-w-[55px] cursor-pointer">
-                <span class="text-[5px] text-zinc-400 font-black block">TURNO</span>
-                <span class="text-[10px] font-mono text-white tracking-widest font-black">0921</span>
-            </div>
+        <header class="header-bodegon py-6 mb-8">
+            <h1 class="text-6xl font-titulo text-[#ffcc00]">EL BODEGÓN</h1>
+            <p class="text-[10px] uppercase tracking-widest opacity-70">Sabor Casero • Río Grande</p>
         </header>
 
-        <div class="h-12 w-full flex justify-center mb-3">
-            <button v-if="pedido.length > 0" @click="verResumen = true" 
-                class="btn-bodegon w-full rounded-xl py-2.5 text-[11px] animate-pulse border-2">
-                CONFIRMAR COMANDA ({{ pedido.length }})
-            </button>
-        </div>
-
-        <div class="flex-1 w-full overflow-y-auto pr-1 space-y-4 mb-4">
+        <div class="mb-8">
+            <h2 class="text-center font-titulo text-2xl mb-4 text-[#ffcc00]">1. Seleccioná tu sucursal</h2>
             <div class="grid grid-cols-2 gap-3">
-                <div v-for="p in platos" :key="p.id" @click="abrirOpciones(p)" class="grid-card relative h-36 flex flex-col cursor-pointer overflow-hidden">
-                    <img :src="getURL(p.img)" class="w-full h-24 object-cover object-center bg-zinc-900">
-                    <div class="flex-1 flex items-center justify-between px-2 bg-black/40 border-t border-white/5">
-                        <span class="text-[9px] font-black uppercase tracking-wider text-zinc-200">{{p.label}}</span>
-                        <span class="text-[8px] font-black bodegon-text">+</span>
-                    </div>
-                </div>
+                <button v-for="s in sucursales" :key="s.id" @click="sucursalSel = s"
+                        :class="['btn-sucursal p-3 rounded-xl text-left', sucursalSel?.id === s.id ? 'active' : '']">
+                    <p class="text-[10px] font-black text-zinc-500 uppercase">Sucursal</p>
+                    <p class="font-bold text-sm">{{ s.nombre }}</p>
+                </button>
             </div>
+        </div>
 
-            <div class="w-full border-t border-white/5 pt-3">
-                <h3 class="text-[7px] tracking-widest text-zinc-500 font-black uppercase mb-2">LÍQUIDA / COMPLEMENTOS</h3>
-                <div class="grid grid-cols-4 gap-2 h-20">
-                    <div v-for="b in bebidas" :key="b.id" @click="abrirOpciones(b)" class="grid-card relative flex flex-col justify-end p-1 cursor-pointer">
-                        <img :src="getURL(b.img)" class="absolute inset-0 w-full h-full object-cover opacity-40">
-                        <span class="relative text-[7px] font-black uppercase text-center w-full bg-black/80 py-1 border-t border-white/5 text-white">{{b.label}}</span>
-                    </div>
-                    
-                    <div class="relative border bodegon-border rounded overflow-hidden bg-black cursor-pointer" @click="toggleVideo">
-                        <video id="adVideo" loop muted playsinline autoplay class="w-full h-full object-cover opacity-70">
-                            <source src="grok_video_2026-03-15-16-48-07.mp4" type="video/mp4">
-                        </video>
-                    </div>
+        <div v-if="sucursalSel">
+            <h2 class="text-center font-titulo text-3xl mb-6 italic text-[#ffcc00]">Nuestras Especialidades</h2>
+            <div v-for="p in platos" :key="p.id" class="card-plato mb-6 shadow-xl">
+                <div class="h-44 relative">
+                    <img :src="p.img" class="w-full h-full object-cover">
+                    <div class="absolute top-3 right-3 font-titulo text-2xl precio-tag">${{ p.precio }}</div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-2xl font-titulo tracking-wide mb-1">{{ p.nombre }}</h3>
+                    <p class="text-xs text-zinc-400 mb-4">{{ p.desc }}</p>
+                    <button @click="enviarPedido(p)" class="btn-pedir w-full py-3 rounded-lg text-sm">PEDIR POR WHATSAPP</button>
                 </div>
             </div>
         </div>
 
-        <div class="silicio-modal" :class="{'active': panelOpciones}">
-            <div v-if="itemActual" class="w-full max-w-xs p-6 bg-black border-2 bodegon-border rounded-2xl text-center">
-                <h2 class="bodegon-text text-lg font-black uppercase mb-6 tracking-widest">{{itemActual.label}}</h2>
-                <div class="space-y-3">
-                    <button v-for="v in itemActual.variedades" @click="agregarAlPedido(v)" class="btn-bodegon w-full py-3 text-xs rounded-lg">
-                        {{v}}
-                    </button>
-                </div>
-                <button @click="panelOpciones = false" class="mt-6 text-zinc-500 text-[9px] font-black uppercase tracking-wider">VOLVER</button>
-            </div>
+        <div v-else class="text-center py-20 opacity-30 font-titulo text-2xl uppercase">
+            Seleccioná una sucursal para ver el menú
         </div>
 
-        <div class="silicio-modal" :class="{'active': verResumen}">
-            <div class="w-full max-w-xs p-6 bg-black border-2 bodegon-border rounded-2xl text-center">
-                <h2 class="bodegon-text text-lg font-black uppercase mb-4 italic">LISTA DE CONSUMO</h2>
-                <div class="space-y-1 mb-5 max-h-48 overflow-y-auto pr-1">
-                    <div v-for="(it, idx) in pedido" :key="idx" class="flex justify-between border-b border-white/5 py-2 text-[10px]">
-                        <span class="font-bold uppercase tracking-wider text-left text-white">{{it.n}} — <span class="text-zinc-400">{{it.v}}</span></span>
-                        <button @click="pedido.splice(idx, 1)" class="text-red-500 font-black px-1">X</button>
-                    </div>
-                </div>
-                <button @click="enviarWhatsApp" class="btn-bodegon w-full py-4 mb-3 border-2 text-xs">DESPACHAR A COCINA</button>
-                <button @click="verResumen = false" class="text-zinc-500 text-[9px] font-black uppercase">SEGUIR SUMANDO</button>
-            </div>
-        </div>
-
-        <div class="silicio-modal" :class="{'active': panelControl}">
-            <div class="w-full max-w-xs p-6 bg-black border-2 bodegon-border rounded-2xl text-center">
-                <h2 class="bodegon-text text-base font-black mb-5 uppercase tracking-widest">SALA DE CONTROL</h2>
-                
-                <div v-if="subPantalla === 'inicio'" class="space-y-3">
-                    <label class="block btn-bodegon p-4 text-[10px] cursor-pointer border-dashed rounded-lg">
-                        {{ configNave.logo ? 'PLOTEO ACTIVO (OK)' : 'CARGAR EMBLEMA LOGO' }}
-                        <input type="file" class="hidden" @change="analizarLogo" accept="image/*">
-                    </label>
-                    <button @click="subPantalla = 'planes'" class="btn-bodegon w-full py-3 text-[10px] rounded-lg">VINCULAR DATOS ADN</button>
-                    <button @click="testBloqueo" class="btn-bodegon w-full py-2 text-[8px] rounded border-red-900 text-red-500">SIMULAR FIN TURNO</button>
-                    <button @click="panelControl = false" class="text-zinc-600 text-[9px] font-black uppercase mt-4 block w-full text-center">SALIR</button>
-                </div>
-
-                <div v-if="subPantalla === 'planes'" class="space-y-3">
-                    <div v-for="p in ['PLAN BÁSICO', 'PLAN PRO', 'PLAN PREMIUM']" :key="p" @click="subPantalla = 'registro'" class="border border-white/10 p-3 rounded-lg cursor-pointer hover:border-orange-500 transition">
-                        <h3 class="bodegon-text font-black text-xs">{{p}}</h3>
-                        <p class="text-[6px] text-zinc-500 mt-0.5">DESBLOQUEO DE SERVICIO TOTAL</p>
-                    </div>
-                    <button @click="subPantalla = 'inicio'" class="text-zinc-500 text-[8px] uppercase font-black mt-2">VOLVER</button>
-                </div>
-
-                <div v-if="subPantalla === 'registro'" class="space-y-4">
-                    <input v-model="formADN.wa" placeholder="WHATSAPP DESPACHO" class="input-bodegon w-full">
-                    <input v-model="formADN.id" placeholder="ID UNIDAD/CUIT" class="input-bodegon w-full">
-                    <button @click="consolidarADN" class="btn-bodegon w-full py-3.5 text-[10px] rounded-lg">SINCRONIZAR TERMINAL</button>
-                    <button @click="subPantalla = 'planes'" class="text-zinc-500 text-[8px] uppercase font-black">VOLVER</button>
-                </div>
-            </div>
-        </div>
-
-        <canvas id="colorCanvas" style="display:none;"></canvas>
     </div>
 
     <script>
@@ -196,102 +71,21 @@
         createApp({
             data() {
                 return {
-                    base: 'https://manaejtcurxbcsozqcsh.supabase.co/storage/v1/object/public/imagenes/public',
-                    sistemaIniciado: false, panelControl: false, verResumen: false, panelOpciones: false, subPantalla: 'inicio',
-                    sessionActiva: localStorage.getItem('nexo_consolidado') === 'true',
-                    cicloAgotado: false, configNave: { logo: null, color: '#ff6400' },
-                    itemActual: null, pedido: [], formADN: { wa: '', id: '' },
-                    platos: [
-                        { id: 1, img: 'asado-escolta.webp', label: 'Asado', variedades: ['Tira de Asado', 'Vacío de Campo'] },
-                        { id: 2, img: 'milanga-soberana.webp', label: 'Milanesa', variedades: ['A la Napolitana', 'Frita Sola'] },
-                        { id: 3, img: 'empanada-escuadron.webp', label: 'Empanadas', variedades: ['Carne Cortada Cuchillo', 'Pollo de Campo'] },
-                        { id: 4, img: 'pizza-core.webp', label: 'Pizza', variedades: ['Muzzarella Especial', 'Especial de la Casa'] },
-                        { id: 5, img: 'flan-casero-nexo.webp', label: 'Postre', variedades: ['Flan con Dulce', 'Budín de Pan'] },
-                        { id: 6, img: 'papas-mega-reactor.webp', label: 'Papas Fritas', variedades: ['Con Cheddar y Verdeo', 'Provenzal Premium'] }
+                    sucursalSel: null,
+                    sucursales: [
+                        { id: 1, nombre: 'SARMIENTO', tel: '5492964404950' },
+                        { id: 2, nombre: 'CABO PRIMERO', tel: '5492964404952' }
                     ],
-                    bebidas: [
-                        { id: 7, img: 'birra-cryo-amber.webp', label: 'Birra', variedades: ['Cerveza IPA', 'Cerveza Rubia'] },
-                        { id: 8, img: 'cava-tinto-premium.webp', label: 'Vino', variedades: ['Malbec Reserva', 'Blanco Dulce'] },
-                        { id: 9, img: 'soda-lemon-reactor.webp', label: 'Soda', variedades: ['Línea Cola', 'Soda Sifón'] }
+                    platos: [
+                        { id: 1, nombre: 'LA MILAGRUESA', desc: 'Gigante y crocante para compartir.', precio: '4500', img: 'https://images.unsplash.com/photo-1632778149975-435f717f7c1e?w=500' },
+                        { id: 2, nombre: 'LOMOSAURIO 🦖', desc: 'El rey de la isla con papas fritas.', precio: '5200', img: 'https://images.unsplash.com/photo-1550507992-eb63ffee0847?w=500' }
                     ]
                 }
             },
-            mounted() { this.cargarPersistencia(); this.checkSeguridad(); },
             methods: {
-                getURL(n) { return `${this.base}/${n}`; },
-                abrirOpciones(item) {
-                    if (!this.sistemaIniciado) { this.sistemaIniciado = true; this.playSnd('sonido-motor.mp3'); }
-                    this.itemActual = item;
-                    this.panelOpciones = true;
-                },
-                agregarAlPedido(variedad) {
-                    this.pedido.push({ n: this.itemActual.label, v: variedad });
-                    this.panelOpciones = false;
-                    this.playSnd('click-reactor.mp3');
-                },
-                analizarLogo(e) {
-                    const file = e.target.files[0]; if (!file) return;
-                    const r = new FileReader();
-                    r.onload = (f) => {
-                        this.configNave.logo = f.target.result;
-                        const img = new Image(); img.src = f.target.result;
-                        img.onload = () => {
-                            const cvs = document.getElementById('colorCanvas'); const ctx = cvs.getContext('2d');
-                            cvs.width = img.width; cvs.height = img.height; ctx.drawImage(img, 0, 0);
-                            const data = ctx.getImageData(img.width/2, img.height/2, 1, 1).data;
-                            this.configNave.color = `rgb(${data[0]}, ${data[1]}, ${data[2]})`;
-                            this.updateStyles();
-                            localStorage.setItem('nexo_config', JSON.stringify(this.configNave));
-                        };
-                    };
-                    r.readAsDataURL(file);
-                },
-                updateStyles() {
-                    document.documentElement.style.setProperty('--main-bodegon', this.configNave.color);
-                    document.documentElement.style.setProperty('--glow-bodegon', this.configNave.color.replace('rgb', 'rgba').replace(')', ', 0.25)'));
-                },
-                cargarPersistencia() {
-                    const c = localStorage.getItem('nexo_config');
-                    if(c) { this.configNave = JSON.parse(c); this.updateStyles(); }
-                },
-                checkSeguridad() {
-                    const start = localStorage.getItem('bodegon_turno_start');
-                    if(!start) localStorage.setItem('bodegon_turno_start', new Date().toISOString());
-                    else {
-                        const diff = (new Date() - new Date(start)) / 3600000;
-                        if(!this.sessionActiva && diff >= 24) this.cicloAgotado = true;
-                    }
-                },
-                consolidarADN() {
-                    if(this.formADN.wa && this.formADN.id) {
-                        localStorage.setItem('nexo_consolidado', 'true');
-                        localStorage.setItem('bodegon_turno_start', new Date().toISOString());
-                        location.reload();
-                    }
-                },
-                testBloqueo() { 
-                    localStorage.setItem('bodegon_turno_start', new Date(new Date().getTime() - (26 * 3600000)).toISOString()); 
-                    location.reload(); 
-                },
-                playSnd(s) {
-                    const a = new Audio(this.getURL(s)); a.volume = 0.1;
-                    a.play().catch(()=>{});
-                },
-                toggleVideo() {
-                    const v = document.getElementById('adVideo');
-                    if(v) v.muted = !v.muted;
-                },
-                enviarWhatsApp() {
-                    let lista = this.pedido.map(it => `🔹 *${it.n}* (${it.v})`).join('\n');
-                    window.open(`https://wa.me/5492964616053?text=${encodeURIComponent('🚀 *EL BODEGÓN: NUEVA COMANDA*\n\n' + lista)}`);
-                    this.pedido = []; this.verResumen = false;
-                },
-                almiranteCheck() {
-                    if(prompt("LLAVE MAESTRA OPERACIONAL") === "051112182129jsm13818") {
-                        localStorage.setItem('nexo_consolidado', 'true');
-                        localStorage.setItem('bodegon_turno_start', new Date().toISOString());
-                        location.reload();
-                    }
+                enviarPedido(p) {
+                    const msg = encodeURIComponent(`¡Hola! Quiero pedir *${p.nombre}* desde la App.`);
+                    window.open(`https://wa.me/${this.sucursalSel.tel}?text=${msg}`);
                 }
             }
         }).mount('#app')
