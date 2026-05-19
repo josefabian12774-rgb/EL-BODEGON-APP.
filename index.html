@@ -163,4 +163,194 @@
                             <p class="text-[10px] text-yellow-400 font-mono mt-0.5">$ {{ obtenerPrecioUnitario(nombre) * cant }}</p>
                         </div>
                         <div class="flex items-center gap-2 bg-black border border-zinc-700 rounded-lg p-1">
-                            <button @click="reducirItem(nombre)" class="bg-zinc-800 text-white w-6 h-6 rounded font-black text-xs flex items-
+                            <button @click="reducirItem(nombre)" class="bg-zinc-800 text-white w-6 h-6 rounded font-black text-xs flex items-center justify-center">-</button>
+                            <span class="font-mono text-xs font-bold px-1 min-w-[16px] text-center text-yellow-400">{{ cant }}</span>
+                            <button @click="aumentarItem(nombre)" class="bg-zinc-800 text-white w-6 h-6 rounded font-black text-xs flex items-center justify-center">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="pedido.length > 0" class="mt-4 bg-zinc-900/40 p-3 rounded-xl border border-zinc-800/80">
+                    <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Sede de Despacho:</p>
+                    <div class="flex gap-2">
+                        <button @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black' : 'bg-black text-zinc-400 border border-zinc-800'" class="flex-1 py-2 rounded-lg text-[10px] font-black uppercase">Sarmiento</button>
+                        <button @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black' : 'bg-black text-zinc-400 border border-zinc-800'" class="flex-1 py-2 rounded-lg text-[10px] font-black uppercase">Cabo 1°</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 pt-4 border-t border-zinc-800">
+                <div class="flex justify-between items-center px-1 mb-1">
+                    <span class="text-zinc-400 text-xs uppercase font-bold">Total Neto:</span>
+                    <span class="font-mono text-2xl font-bold text-yellow-400">$ {{ calcularTotalPedido }}</span>
+                </div>
+                <button @click="dispararComanda" :disabled="pedido.length === 0 || !sucSel"
+                    :class="pedido.length > 0 && sucSel ? 'bg-yellow-400 text-black' : 'bg-zinc-800 text-zinc-500'"
+                    class="w-full py-4 rounded-xl font-black uppercase text-[11px] tracking-widest transition-all shadow-lg text-center">
+                    {{ !sucSel ? 'SELECCIONE SUCURSAL PARA ENVIAR' : 'CONVALIDAR Y ENVIAR PEDIDO' }}
+                </button>
+                <div class="flex justify-between text-[10px] uppercase font-bold mt-1 px-1">
+                    <button @click="mostrarModalComanda = false" class="text-zinc-400 underline">← Volver al Menú</button>
+                    <button @click="vaciarComandaCompletaSilencioso" v-if="pedido.length > 0" class="text-red-500/80">Vaciar Carrito</button>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="mostrarSalaControl" class="fixed inset-0 bg-black/95 backdrop-blur-md z-[200] flex flex-col justify-center items-center p-6">
+            <div class="w-full max-w-xs bg-zinc-900 border-2 border-yellow-400 rounded-[2rem] p-6 relative shadow-[0_0_40px_rgba(250,204,21,0.2)]">
+                <button @click="mostrarSalaControl = false" class="absolute top-4 right-4 bg-zinc-800 text-zinc-400 w-7 h-7 rounded-full font-black text-xs">✕</button>
+                
+                <div class="text-center mb-6">
+                    <h3 class="font-marker text-2xl text-yellow-400 tracking-wide uppercase">SALA DE CONTROL</h3>
+                    <p class="text-[8px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Nexo Nave Central Hub</p>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button @click="seleccionarModo('Fantasma')" class="w-full bg-black hover:bg-zinc-800 border border-zinc-700 py-3 rounded-xl flex flex-col items-center justify-center transition-all">
+                        <span class="text-white font-bold text-xs uppercase tracking-wider">Modo Fantasma</span>
+                        <span class="text-[8px] text-yellow-500 font-mono font-bold mt-0.5">(24 HS)</span>
+                    </button>
+                    
+                    <button @click="seleccionarModo('Prueba')" class="w-full bg-black hover:bg-zinc-800 border border-zinc-700 py-3 rounded-xl flex flex-col items-center justify-center transition-all">
+                        <span class="text-white font-bold text-xs uppercase tracking-wider">Modo Prueba</span>
+                        <span class="text-[7px] text-red-400 font-bold uppercase tracking-tight mt-0.5">⚠️ Requiere Loguearse</span>
+                        <span class="text-[8px] text-zinc-500 font-mono mt-0.5">(20 DÍAS)</span>
+                    </button>
+                    
+                    <button @click="seleccionarModo('Pro')" class="w-full bg-gradient-to-r from-amber-600 to-yellow-500 text-black py-3 rounded-xl flex flex-col items-center justify-center font-black transition-all shadow-md">
+                        <span class="text-[11px] uppercase tracking-widest">Modo Pro</span>
+                    </button>
+                    
+                    <button @click="seleccionarModo('Premium')" class="w-full bg-white text-black py-3 rounded-xl flex flex-col items-center justify-center font-black transition-all shadow-lg border border-white">
+                        <span class="text-[11px] uppercase tracking-widest">Modo Premium</span>
+                    </button>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button @click="tabActiva = 'ADMIN'; mostrarSalaControl = false" class="text-zinc-600 text-[9px] uppercase tracking-wider font-bold underline">Abrir Editor Parámetros Base</button>
+                </div>
+            </div>
+        </div>
+
+        <footer v-if="tabActiva !== 'ADMIN'" class="flex items-end pb-4 h-[22%]">
+            <div class="footer-controls">
+                <div class="flex gap-2 items-center">
+                    <div @click="sucSel = 'SARMIENTO'" :class="sucSel === 'SARMIENTO' ? 'bg-yellow-400 text-black border-white' : 'bg-zinc-900/90 text-white border-transparent'" class="btn-sucursal border-2 shadow-md">
+                        <p>SARMIENTO</p>
+                    </div>
+                    <div @click="sucSel = 'CABO'" :class="sucSel === 'CABO' ? 'bg-yellow-400 text-black border-white' : 'bg-zinc-900/90 text-white border-transparent'" class="btn-sucursal border-2 shadow-md">
+                        <p>CABO 1°</p>
+                    </div>
+                </div>
+                <button @click="abrirVisorComanda" :disabled="pedido.length === 0"
+                    :class="pedido.length > 0 ? 'bg-yellow-400 text-black shadow-[0_0_15px_rgba(250,204,21,0.4)]' : 'bg-zinc-900 border-zinc-800 text-zinc-600'"
+                    class="w-full border py-3.5 rounded-2xl font-black uppercase text-[9px] tracking-widest transition-all">
+                    {{ pedido.length === 0 ? 'AÑADA ELEMENTOS' : `REVISAR Y CONVALIDAR ($${calcularTotalPedido})` }}
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    tabActiva: 'MENÚ DEL DÍA',
+                    sucSel: null,
+                    tabs: ['MENÚ DEL DÍA', 'PROMOCIONES', 'ESPECIALIDADES', 'CONTACTO', 'ADMIN'],
+                    pedido: [],
+                    nuevoPlato: { nombre: '', precio: null, img: '' },
+                    mostrarModalComanda: false,
+                    mostrarSalaControl: false,
+                    
+                    config: JSON.parse(localStorage.getItem('bodegon_config')) || {
+                        nombreNegocio: 'NEXO NAVE',
+                        ciudad: 'Río Grande',
+                        menuDiaNombre: 'Ravioles Caseros',
+                        menuDiaPrecio: 6500,
+                        menuDiaImg: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&h=350&fit=crop'
+                    },
+                    sucursalesTel: JSON.parse(localStorage.getItem('bodegon_tels')) || {
+                        'SARMIENTO': '5492964616053',
+                        'CABO': '5492964616053'
+                    },
+                    promos: [
+                        { nombre: 'COMBO AMIGOS 🤝', precio: 12500, desc: '2 milagruses medianas + porción doble de papas fritas.' },
+                        { nombre: 'PROMO LOMO 🦖🥤', precio: 9800, desc: '1 lomosaurio rey + bebida de 500ml de regalo.' }
+                    ],
+                    platos: JSON.parse(localStorage.getItem('bodegon_platos')) || [
+                        { nombre: 'MILAGRUESA', precio: 7200, img: 'https://images.unsplash.com/photo-1594179200424-64448555e7bc?w=140&h=140&fit=crop' },
+                        { nombre: 'LOMOSAURIO', precio: 8500, img: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=140&h=140&fit=crop' },
+                        { nombre: 'EMPANADAS', precio: 5800, img: 'https://images.unsplash.com/photo-1628102476629-f81c107ce83d?w=140&h=140&fit=crop' }
+                    ]
+                }
+            },
+            computed: {
+                filtradoTabs() {
+                    return this.tabs.filter(t => t !== 'ADMIN');
+                },
+                comandaAgrupada() {
+                    let g = {};
+                    this.pedido.forEach(it => { g[it.nombre] = (g[it.nombre] || 0) + 1; });
+                    return g;
+                },
+                calcularTotalPedido() {
+                    return this.pedido.reduce((acc, el) => acc + el.precio, 0);
+                }
+            },
+            methods: {
+                agregar(p) { this.pedido.push({ nombre: p.nombre, precio: p.precio }); },
+                abrirVisorComanda() { this.mostrarModalComanda = true; },
+                vaciarComandaCompletaSilencioso() {
+                    if(confirm("¿Deseas vaciar todos los elementos de la comanda?")) {
+                        this.pedido = [];
+                        this.mostrarModalComanda = false;
+                    }
+                },
+                toggleAudio() { document.getElementById('adVideo').muted = !document.getElementById('adVideo').muted; },
+                seleccionarModo(modo) {
+                    alert(`Sala de Control: Mutando parámetros del Arquetipo hacia [Modo ${modo}].`);
+                    this.mostrarSalaControl = false;
+                },
+                obtenerPrecioUnitario(nombre) {
+                    if (nombre === this.config.menuDiaNombre) return this.config.menuDiaPrecio;
+                    let pr = this.promos.find(p => p.nombre === nombre);
+                    if (pr) return pr.precio;
+                    let pl = this.platos.find(p => p.nombre === nombre);
+                    return pl ? pl.precio : 0;
+                },
+                aumentarItem(nombre) {
+                    let precio = this.obtenerPrecioUnitario(nombre);
+                    this.pedido.push({ nombre, precio });
+                },
+                reducirItem(nombre) {
+                    let idx = this.pedido.findIndex(it => it.nombre === nombre);
+                    if (idx !== -1) this.pedido.splice(idx, 1);
+                },
+                inyectarPlato() {
+                    if (!this.nuevoPlato.nombre || !this.nuevoPlato.precio) return alert('Completar campos.');
+                    if (!this.nuevoPlato.img) this.nuevoPlato.img = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=140&h=140&fit=crop';
+                    this.platos.push({ ...this.nuevoPlato });
+                    this.nuevoPlato = { nombre: '', precio: null, img: '' };
+                    alert('Plato inyectado.');
+                },
+                guardarConfig() {
+                    localStorage.setItem('bodegon_config', JSON.stringify(this.config));
+                    localStorage.setItem('bodegon_tels', JSON.stringify(this.sucursalesTel));
+                    localStorage.setItem('bodegon_platos', JSON.stringify(this.platos));
+                    alert('¡Estructura guardada!');
+                    this.tabActiva = 'MENÚ DEL DÍA';
+                },
+                dispararComanda() {
+                    if (this.pedido.length === 0 || !this.sucSel) return;
+                    let cuerpo = Object.keys(this.comandaAgrupada).map(nombre => `🔹 *${this.comandaAgrupada[nombre]}x ${nombre}*`).join('\n');
+                    const mensaje = encodeURIComponent(`🥩 *${this.config.nombreNegocio} - NUEVA COMANDA*\n\n📍 *Sede:* ${this.sucSel === 'CABO' ? 'CABO 1°' : this.sucSel}\n\n${cuerpo}\n\n💰 *Total:* $${this.calcularTotalPedido}`);
+                    const telefono = this.sucursalesTel[this.sucSel];
+                    window.open(`https://wa.me/${telefono}?text=${mensaje}`);
+                    this.pedido = [];
+                    this.mostrarModalComanda = false;
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
