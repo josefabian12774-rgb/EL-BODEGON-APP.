@@ -5,34 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nexo Nave</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 15px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .btn-sala { border: 1px solid #eab308; color: #eab308; padding: 8px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; background: transparent; text-decoration: none; }
+    .logo-container { text-align: center; }
+    .logo-title { font-family: serif; font-style: italic; color: #fef08a; font-size: 22px; letter-spacing: 2px; }
+    .logo-sub { color: #6b7280; font-size: 9px; letter-spacing: 3px; margin-top: 2px; }
+    .badge { background: #1f2937; color: #9ca3af; font-size: 8px; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px; }
+    .cart-icon { position: relative; background: #111; padding: 10px; border-radius: 50%; border: 1px solid #222; }
+    .cart-count { position: absolute; top: -4px; right: -4px; background: #fff; color: #000; font-size: 10px; font-weight: bold; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .nav-tabs { display: flex; gap: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px; overflow-x: auto; }
+    .tab { color: #6b7280; font-size: 11px; font-weight: bold; text-transform: uppercase; white-space: nowrap; text-decoration: none; }
+    .tab.active { color: #eab308; border-bottom: 2px solid #eab308; padding-bottom: 8px; }
+    .card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
+    .card-img { width: 100%; height: 200px; object-fit: cover; }
+    .card-body { padding: 20px; text-align: center; }
+    .card-title { font-family: serif; font-style: italic; color: #fef08a; font-size: 24px; margin-bottom: 8px; }
+    .card-price { font-size: 22px; font-weight: bold; margin-bottom: 15px; }
+    .btn-add { background: #eab308; color: #000; font-weight: bold; width: 100%; padding: 12px; border-radius: 20px; border: none; font-size: 11px; text-transform: uppercase; cursor: pointer; }
+    .footer-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-sec { flex: 1; background: #18181b; border: 1px solid #27272a; color: #fff; padding: 12px; border-radius: 8px; font-size: 10px; font-weight: bold; text-align: center; }
+    .ad-banner { background: #000; border: 1px solid #eab308; border-radius: 12px; padding: 8px; position: relative; margin-top: 20px; }
+    .ad-tag { position: absolute; top: 6px; left: 8px; background: #eab308; color: #000; font-size: 7px; font-weight: bold; padding: 1px 4px; border-radius: 2px; }
+    .ad-img { width: 100%; border-radius: 8px; display: block; }
+  </style>
 </head>
-<body style="background-color: #000; color: #fff; font-family: sans-serif; text-align: center; padding: 20px;">
+<body>
 
-  <div id="app">
-    <h1 id="titulo-nave">Cargando Nave...</h1>
-    <div id="contenido-nave"></div>
-  </div>
+  <div id="app"></div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const naveId = urlParams.get('nave') || 'bodegon';
 
+    const app = document.getElementById('app');
+
     if (naveId === 'barberia-urban-cut') {
-      document.getElementById('titulo-nave').innerText = "BARBERÍA URBAN CUT";
-      document.getElementById('contenido-nave').innerHTML = `
-        <p style="color: #eab308;">Cortes Profesionales & Barbería</p>
-        <div style="border: 1px solid #eab308; padding: 15px; margin: 10px; border-radius: 8px;">
-          <h3>Corte Sombra / Fade</h3>
-          <p>Precio: $8.000</p>
+      app.innerHTML = `
+        <div class="header">
+          <button class="btn-sala">SALA<br>CTRL</button>
+          <div class="logo-container">
+            <div class="logo-title">URBAN CUT</div>
+            <div class="logo-sub">BARBERÍA</div>
+            <div class="badge">MODO PRUEBA</div>
+          </div>
+          <div class="cart-icon">✂️<div class="cart-count">0</div></div>
+        </div>
+
+        <div class="nav-tabs">
+          <a class="tab active" href="#">SERVICIOS</a>
+          <a class="tab" href="#">BARBEROS</a>
+          <a class="tab" href="#">TURNO</a>
+          <a class="tab" href="#">CONTACTO</a>
+        </div>
+
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600&auto=format&fit=crop" class="card-img" alt="Corte Sombra">
+          <div class="card-body">
+            <div class="card-title">CORTE SOMBRA / FADE</div>
+            <div class="card-price">$ 8000</div>
+            <button class="btn-add">RESERVAR TURNO</button>
+          </div>
         </div>
       `;
     } else {
-      document.getElementById('titulo-nave').innerText = "NEXO NAVE - BODEGÓN";
-      document.getElementById('contenido-nave').innerHTML = `
-        <p style="color: #eab308;">Menú del día</p>
-        <div style="border: 1px solid #eab308; padding: 15px; margin: 10px; border-radius: 8px;">
-          <h3>Ravioles Caseros</h3>
-          <p>Precio: $6.500</p>
+      // NAVE BODEGÓN COMPLETA
+      app.innerHTML = `
+        <div class="header">
+          <button class="btn-sala">SALA<br>CTRL</button>
+          <div class="logo-container">
+            <div class="logo-title">NEXO NAVE</div>
+            <div class="logo-sub">RÍO GRANDE</div>
+            <div class="badge">MODO PRUEBA</div>
+          </div>
+          <div class="cart-icon">🛒<div class="cart-count">0</div></div>
+        </div>
+
+        <div class="nav-tabs">
+          <a class="tab active" href="#">MENÚ DEL DÍA</a>
+          <a class="tab" href="#">PROMOCIONES</a>
+          <a class="tab" href="#">ESPECIALIDADES</a>
+          <a class="tab" href="#">CONTACTO</a>
+        </div>
+
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=600&auto=format&fit=crop" class="card-img" alt="Ravioles">
+          <div class="card-body">
+            <div class="card-title">RARIOLES CASEROS</div>
+            <div class="card-price">$ 6500</div>
+            <button class="btn-add">AÑADIR AL CARRITO</button>
+          </div>
+        </div>
+
+        <div class="footer-btns">
+          <div class="btn-sec">SARMIENTO</div>
+          <div class="btn-sec">CABO 1°</div>
+        </div>
+
+        <div class="footer-btns" style="margin-top: 8px;">
+          <div class="btn-sec" style="color: #6b7280;">AÑADA ELEMENTOS</div>
         </div>
       `;
     }
