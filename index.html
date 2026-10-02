@@ -43,8 +43,9 @@
 <script>
 const {createApp}=Vue;
 const SUPABASE_URL='https://manaejtcurxbcsozqcsh.supabase.co'; 
-const SUPABASE_ANON_KEY=sb_publishable_LTZY6uMVRCnd_K41dneBtw_xn3XU0ke
-const {createClient}=window.supabase; const supabaseClient=createClient(SUPABASE_URL,SUPABASE_ANON_KEY); const SLUG='el-bodegon';
+const SUPABASE_ANON_KEY='sb_publishable_LTZY6uMVRCnd_K41dneBtw_xn3XU0ke';
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const SLUG='el-bodegon';
 
 createApp({
     data(){
@@ -65,7 +66,7 @@ createApp({
     async mounted(){await this.cargarConfiguracion()},
     methods:{
         async cargarConfiguracion(){
-            if(SUPABASE_ANON_KEY==='PEGA_AQUI_TU_PUBLISHABLE_KEY')return;
+            if(!supabaseClient) return;
             const{data,error}=await supabaseClient.from('nexo_naves').select('slug,config_borrador,config_publicada').eq('slug',SLUG).single();
             if(error){console.warn('Nexo: no se pudo cargar Supabase.',error.message);return}
             const fuente=this.modoAdmin?(data.config_borrador||data.config_publicada):data.config_publicada;
@@ -84,8 +85,8 @@ createApp({
             if(p.superficie)r.setProperty('--nexo-surface',p.superficie);
         },
         async guardarBorrador(){
-            if(SUPABASE_ANON_KEY==='PEGA_AQUI_TU_PUBLISHABLE_KEY'){
-                alert('Primero hay que colocar la clave publishable key de Supabase.');
+            if(!supabaseClient){
+                alert('No se pudo conectar con Supabase.');
                 return;
             }
             this.subiendo = true;
@@ -130,8 +131,8 @@ createApp({
             }
         },
         async publicar(){
-            if(SUPABASE_ANON_KEY==='PEGA_AQUI_TU_PUBLISHABLE_KEY'){
-                alert('Primero hay que colocar la clave publishable key de Supabase.');
+            if(!supabaseClient){
+                alert('No se pudo conectar con Supabase.');
                 return;
             }
             const{error}=await supabaseClient.rpc('publicar_nave',{p_slug:SLUG});
@@ -143,7 +144,7 @@ createApp({
         },
         agregar(p){this.pedido.push(p)},
         vaciarCarrito(){if(confirm('¿Desea vaciar la comanda actual?'))this.pedido=[]},
-        toggleAudio(){const v=document.getElementById('adVideo');v.muted=!v.muted},
+        toggleAudio(){const v=document.getElementById('adVideo');if(v)v.muted=!v.muted},
         obtenerTextoBoton(){
             if(!this.sucSel)return'SELECCIONE SUCURSAL';
             if(this.pedido.length===0)return'AÑADA ELEMENTOS';
