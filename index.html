@@ -25,7 +25,7 @@
         <button @click="guardarBorrador" :disabled="subiendo" class="bg-zinc-200 text-black">
             {{ subiendo ? '⏳ Subiendo...' : '💾 Guardar borrador' }}
         </button>
-        <button @click="publicar" class="bg-yellow-400 text-black">🚀 Publicar</button>
+        <button @click="publicar" :disabled="subiendo" class="bg-yellow-400 text-black">🚀 Publicar</button>
     </div>
     <p class="text-[9px] text-zinc-500 mt-2">Modo laboratorio: todavía NO es autenticación de producción.</p>
 </div>
@@ -84,14 +84,8 @@ createApp({
             if(p.texto_principal)r.setProperty('--nexo-text',p.texto_principal);
             if(p.superficie)r.setProperty('--nexo-surface',p.superficie);
         },
-        async guardarBorrador(){
-            if(!supabaseClient){
-                alert('No se pudo conectar con Supabase.');
-                return;
-            }
-            this.subiendo = true;
+        async procesarSubidaFoto(){
             let imgUrl = this.menuDia.img;
-
             const fileInput = this.$refs.fotoInput;
             if (fileInput && fileInput.files[0]) {
                 const file = fileInput.files[0];
@@ -104,8 +98,7 @@ createApp({
 
                 if (uploadErr) {
                     alert('Error al subir foto: ' + uploadErr.message);
-                    this.subiendo = false;
-                    return;
+                    return null;
                 }
 
                 const { data: urlData } = supabaseClient.storage
@@ -114,6 +107,16 @@ createApp({
 
                 imgUrl = urlData.publicUrl;
             }
+            return imgUrl;
+        },
+        async guardarBorrador(){
+            if(!supabaseClient){
+                alert('No se pudo conectar con Supabase.');
+                return;
+            }
+            this.subiendo = true;
+            const imgUrl = await this.procesarSubidaFoto();
+            if (imgUrl === null) { this.subiendo = false; return; }
 
             const borradorActualizado = {
                 ...this.config,
@@ -135,11 +138,30 @@ createApp({
                 alert('No se pudo conectar con Supabase.');
                 return;
             }
-            const{error}=await supabaseClient.rpc('publicar_nave',{p_slug:SLUG});
+            this.subiendo = true;
+            
+            // 1. Si eligió un archivo nuevo pero no presionó "Guardar borrador", subimos la foto de una
+            const imgUrl = await this.procesarSubidaFoto();
+            if (imgUrl === null) { this.subiendo = false; return; }
+
+            const configActualizada = {
+                ...this.config,
+                menuDia: { ...this.menuDia, img: imgUrl }
+            };
+
+            // 2. Copiamos directamente a config_borrador y config_publicada para garantizar la publicación instantánea
+            const{error}=await supabaseClient.from('nexo_naves').update({
+                config_borrador: configActualizada,
+                config_publicada: configActualizada,
+                updated_at: new Date().toISOString()
+            }).eq('slug',SLUG);
+            
+            this.subiendo = false;
+
             if(error) alert('Error al publicar: '+error.message);
             else{
-                alert('🚀 Nave publicada. Recargando versión pública...');
-                location.href=location.pathname;
+                alert('🚀 ¡Nave publicada con éxito!');
+                location.href = location.pathname; // Redirige a la versión pública sin ?admin=true
             }
         },
         agregar(p){this.pedido.push(p)},
