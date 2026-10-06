@@ -59,7 +59,7 @@ createApp({
             tabs:['MENÚ DEL DÍA','PROMOCIONES','ESPECIALIDADES','CONTACTO'],
             pedido:[],
             sucursalesTel:{SARMIENTO:'5492964404950',CABO:'5492964404952'},
-            promos:[{nombre:'COMBO AMIGOS 🤝',precio:12500,desc:'2 milagruses medianas + porción doble de papas fritas.'},{nombre:'PROMO LOMO 🦖🥤',precio:9800,desc:'1 lomosaurio rey + bebida de 500ml de regalo.'}],
+            promos:[{nombre:'COMBO AMIGOS 🤝',precio:12500,desc:'2 milagruses medianas + porción doble de papas fritas.'},{nombre:'PROMO LOMO REX 🦖🥤',precio:9800,desc:'1 lomosaurio rey + bebida de 500ml de regalo.'}],
             platos:[{nombre:'MILAGRUESA',precio:7200,img:'https://images.unsplash.com/photo-1594179200424-64448555e7bc?q=80&w=200'},{nombre:'LOMOSAURIO',precio:8500,img:'https://images.unsplash.com/photo-1553979459-d2229ba7433b?q=80&w=200'},{nombre:'EMPANADAS',precio:5800,img:'https://images.unsplash.com/photo-1628102476629-f81c107ce83d?q=80&w=200'}]
         }
     },
@@ -72,7 +72,9 @@ createApp({
             const fuente=this.modoAdmin?(data.config_borrador||data.config_publicada):data.config_publicada;
             if(fuente){
                 this.config={...this.config,...fuente};
-                if(fuente.menuDia) this.menuDia = fuente.menuDia;
+                if(fuente.menuDia && fuente.menuDia.img) {
+                    this.menuDia = {...fuente.menuDia};
+                }
                 this.aplicarApariencia(this.config.apariencia);
             }
         },
@@ -155,7 +157,8 @@ createApp({
             if(error) alert('Error al publicar: '+error.message);
             else{
                 alert('🚀 ¡Nave publicada con éxito!');
-                location.href = location.pathname;
+                // Redirigimos agregando un parámetro aleatorio para destruir el caché del navegador
+                location.href = window.location.pathname + '?v=' + Date.now();
             }
         },
         agregar(p){this.pedido.push(p)},
