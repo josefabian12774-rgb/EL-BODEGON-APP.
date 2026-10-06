@@ -42,7 +42,8 @@
 </div>
 <script>
 const {createApp}=Vue;
-const SUPABASE_URL='https://manaejtcurxbcsozqcsh.supabase.co'; 
+// URL CORREGIDA DE NAVE-POM-POM:
+const SUPABASE_URL='https://manawjtcurxbcsorgcsh.supabase.co'; 
 const SUPABASE_ANON_KEY='sb_publishable_LTZY6uMVRCnd_K41dneBtw_xn3XU0ke';
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 const SLUG='el-bodegon';
@@ -97,7 +98,7 @@ createApp({
                     .upload(fileName, file);
 
                 if (uploadErr) {
-                    alert('Error al subir foto: ' + uploadErr.message);
+                    alert('⚠️ ATENCIÓN: Error subiendo foto a Supabase -> ' + uploadErr.message);
                     return null;
                 }
 
@@ -129,7 +130,7 @@ createApp({
 
             if(error) alert('Error guardando borrador: '+error.message);
             else {
-                alert('💾 Borrador guardado con éxito. La Nave pública todavía no cambió.');
+                alert('💾 Borrador guardado. Foto asignada.');
                 this.menuDia.img = imgUrl;
             }
         },
@@ -139,8 +140,6 @@ createApp({
                 return;
             }
             this.subiendo = true;
-            
-            // 1. Si eligió un archivo nuevo pero no presionó "Guardar borrador", subimos la foto de una
             const imgUrl = await this.procesarSubidaFoto();
             if (imgUrl === null) { this.subiendo = false; return; }
 
@@ -149,7 +148,6 @@ createApp({
                 menuDia: { ...this.menuDia, img: imgUrl }
             };
 
-            // 2. Copiamos directamente a config_borrador y config_publicada para garantizar la publicación instantánea
             const{error}=await supabaseClient.from('nexo_naves').update({
                 config_borrador: configActualizada,
                 config_publicada: configActualizada,
@@ -161,7 +159,7 @@ createApp({
             if(error) alert('Error al publicar: '+error.message);
             else{
                 alert('🚀 ¡Nave publicada con éxito!');
-                location.href = location.pathname; // Redirige a la versión pública sin ?admin=true
+                location.href = location.pathname;
             }
         },
         agregar(p){this.pedido.push(p)},
