@@ -42,8 +42,7 @@
 </div>
 <script>
 const {createApp}=Vue;
-// URL CORREGIDA DE NAVE-POM-POM:
-const SUPABASE_URL='https://manawjtcurxbcsorgcsh.supabase.co'; 
+const SUPABASE_URL='https://manaejtcurxbcsozqcsh.supabase.co'; 
 const SUPABASE_ANON_KEY='sb_publishable_LTZY6uMVRCnd_K41dneBtw_xn3XU0ke';
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 const SLUG='el-bodegon';
@@ -85,28 +84,25 @@ createApp({
             if(p.texto_principal)r.setProperty('--nexo-text',p.texto_principal);
             if(p.superficie)r.setProperty('--nexo-surface',p.superficie);
         },
-        async procesarSubidaFoto(){
+        convertirImagenABase64(file){
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        },
+        async obtenerFotoUrl(){
             let imgUrl = this.menuDia.img;
             const fileInput = this.$refs.fotoInput;
             if (fileInput && fileInput.files[0]) {
                 const file = fileInput.files[0];
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${SLUG}_${Date.now()}.${fileExt}`;
-
-                const { error: uploadErr } = await supabaseClient.storage
-                    .from('naves-media')
-                    .upload(fileName, file);
-
-                if (uploadErr) {
-                    alert('⚠️ ATENCIÓN: Error subiendo foto a Supabase -> ' + uploadErr.message);
+                try {
+                    imgUrl = await this.convertirImagenABase64(file);
+                } catch (e) {
+                    alert('Error al procesar la imagen seleccionada.');
                     return null;
                 }
-
-                const { data: urlData } = supabaseClient.storage
-                    .from('naves-media')
-                    .getPublicUrl(fileName);
-
-                imgUrl = urlData.publicUrl;
             }
             return imgUrl;
         },
@@ -116,8 +112,8 @@ createApp({
                 return;
             }
             this.subiendo = true;
-            const imgUrl = await this.procesarSubidaFoto();
-            if (imgUrl === null) { this.subiendo = false; return; }
+            const imgUrl = await this.obtenerFotoUrl();
+            if (!imgUrl) { this.subiendo = false; return; }
 
             const borradorActualizado = {
                 ...this.config,
@@ -130,7 +126,7 @@ createApp({
 
             if(error) alert('Error guardando borrador: '+error.message);
             else {
-                alert('💾 Borrador guardado. Foto asignada.');
+                alert('💾 Borrador guardado con éxito.');
                 this.menuDia.img = imgUrl;
             }
         },
@@ -140,8 +136,8 @@ createApp({
                 return;
             }
             this.subiendo = true;
-            const imgUrl = await this.procesarSubidaFoto();
-            if (imgUrl === null) { this.subiendo = false; return; }
+            const imgUrl = await this.obtenerFotoUrl();
+            if (!imgUrl) { this.subiendo = false; return; }
 
             const configActualizada = {
                 ...this.config,
