@@ -27,7 +27,7 @@
         </button>
         <button @click="publicar" :disabled="subiendo" class="bg-yellow-400 text-black">🚀 Publicar</button>
     </div>
-    <p class="text-[9px] text-zinc-500 mt-2">Modo laboratorio: todavía NO es autenticación de producción.</p>
+    <p class="text-[9px] text-zinc-500 mt-2">Modo laboratorio: Storage Supabase activo.</p>
 </div>
 
 <div id="nexo-static-ad" @click="toggleAudio"><video id="adVideo" loop muted playsinline autoplay style="width:100%;height:100%;object-fit:cover"><source src="73728bfbcc512462910cae2213cd896c.mp4" type="video/mp4"></video><div class="absolute top-1 left-1 text-[5px] bg-yellow-500 text-black px-1 rounded font-black uppercase tracking-tighter">Nexo Ad</div></div>
@@ -86,25 +86,30 @@ createApp({
             if(p.texto_principal)r.setProperty('--nexo-text',p.texto_principal);
             if(p.superficie)r.setProperty('--nexo-surface',p.superficie);
         },
-        convertirImagenABase64(file){
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        },
-        async obtenerFotoUrl(){
+        async subirFotoAlStorage(){
             let imgUrl = this.menuDia.img;
             const fileInput = this.$refs.fotoInput;
             if (fileInput && fileInput.files[0]) {
                 const file = fileInput.files[0];
-                try {
-                    imgUrl = await this.convertirImagenABase64(file);
-                } catch (e) {
-                    alert('Error al procesar la imagen seleccionada.');
-                    return null;
+                const fileExt = file.name.split('.').pop().toLowerCase();
+                const fileName = `menu_${Date.now()}.${fileExt}`;
+
+                const { error: uploadErr } = await supabaseClient.storage
+                    .from('naves-media')
+                    .upload(fileName, file, { upsert: false });
+
+                if (uploadErr) {
+                    throw new Error('Error al subir imagen al Storage: ' + uploadErr.message);
                 }
+
+                const { data: urlData } = supabaseClient.storage
+                    .from('naves-media')
+                    .getPublicUrl(fileName);
+
+                if (!urlData || !urlData.publicUrl) {
+                    throw new Error('Supabase no devolvió una URL pública.');
+                }
+                imgUrl = urlData.publicUrl;
             }
             return imgUrl;
         },
@@ -113,23 +118,25 @@ createApp({
                 alert('No se pudo conectar con Supabase.');
                 return;
             }
-            this.subiendo = true;
-            const imgUrl = await this.obtenerFotoUrl();
-            if (!imgUrl) { this.subiendo = false; return; }
+            try {
+                this.subiendo = true;
+                const imgUrl = await this.suberFotoAlStorage(); // o subirFotoAlStorage
 
-            const borradorActualizado = {
-                ...this.config,
-                menuDia: { ...this.menuDia, img: imgUrl }
-            };
+                const borradorActualizado = {
+                    ...this.config,
+                    menuDia: { ...this.menuDia, img: imgUrl }
+                };
 
-            const{error}=await supabaseClient.from('nexo_naves').update({config_borrador:borradorActualizado,updated_at:new Date().toISOString()}).eq('slug',SLUG);
-            
-            this.subiendo = false;
+                const{error}=await supabaseClient.from('nexo_naves').update({config_borrador:borradorActualizado,updated_at:new Date().toISOString()}).eq('slug',SLUG);
+                if(error) throw error;
 
-            if(error) alert('Error guardando borrador: '+error.message);
-            else {
                 alert('💾 Borrador guardado con éxito.');
                 this.menuDia.img = imgUrl;
+                if(this.$refs.fotoInput) this.$refs.fotoInput.value = '';
+            } catch (err) {
+                alert('Error guardando borrador: '+err.message);
+            } finally {
+                this.subiendo = false;
             }
         },
         async publicar(){
@@ -137,28 +144,28 @@ createApp({
                 alert('No se pudo conectar con Supabase.');
                 return;
             }
-            this.subiendo = true;
-            const imgUrl = await this.obtenerFotoUrl();
-            if (!imgUrl) { this.subiendo = false; return; }
+            try {
+                this.subiendo = true;
+                const imgUrl = await this.subirFotoAlStorage();
 
-            const configActualizada = {
-                ...this.config,
-                menuDia: { ...this.menuDia, img: imgUrl }
-            };
+                const configActualizada = {
+                    ...this.config,
+                    menuDia: { ...this.menuDia, img: imgUrl }
+                };
 
-            const{error}=await supabaseClient.from('nexo_naves').update({
-                config_borrador: configActualizada,
-                config_publicada: configActualizada,
-                updated_at: new Date().toISOString()
-            }).eq('slug',SLUG);
-            
-            this.subiendo = false;
+                const{error}=await supabaseClient.from('nexo_naves').update({
+                    config_borrador: configActualizada,
+                    config_publicada: configActualizada,
+                    updated_at: new Date().toISOString()
+                }).eq('slug',SLUG);
+                if(error) throw error;
 
-            if(error) alert('Error al publicar: '+error.message);
-            else{
                 alert('🚀 ¡Nave publicada con éxito!');
-                // Redirigimos agregando un parámetro aleatorio para destruir el caché del navegador
                 location.href = window.location.pathname + '?v=' + Date.now();
+            } catch (err) {
+                alert('Error al publicar: '+err.message);
+            } finally {
+                this.subiendo = false;
             }
         },
         agregar(p){this.pedido.push(p)},
